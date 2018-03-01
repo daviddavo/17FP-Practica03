@@ -1,5 +1,3 @@
-#include <algorithm>
-
 #ifndef SRC_MODULES_MAZO_H_
 #define SRC_MODULES_MAZO_H_
 
@@ -18,8 +16,11 @@ constexpr unsigned NUM_CARTAS = sum(nCartas);
 
 typedef tCarta tMazo[NUM_CARTAS];
 
+std::string carta2string(const tCarta);
 void crearVacia(tMazo &);
+void crearMazoOrdenado(tMazo &);
 void crearMazoAleatorio(tMazo &);
 bool sacar (tMazo  &, tCarta &);
+bool insertar(tMazo &, const tCarta);
 
 #endif /* SRC_MODULES_MAZO_H_ */

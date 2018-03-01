@@ -1,4 +1,17 @@
+#include <algorithm>
+#include <string>
 #include "mazo.h";
+
+std::string carta2string(const tCarta carta){
+	switch(carta){
+		case AVANZAR: return "avanzar";
+		case GIROIZQUIERDA: return "giro a la izquierda";
+		case GIRODERECHA: return "giro a la derecha";
+		case LASER: return "laser";
+		case NADA: return "Nada";
+		default: return "????";
+	}
+}
 
 void crearVacia(tMazo & mazo){
 	for(unsigned int i = 0; i < NUM_CARTAS; i++){
@@ -6,7 +19,7 @@ void crearVacia(tMazo & mazo){
 	}
 }
 
-void crearMazoAleatorio(tMazo & mazo){
+void crearMazoOrdenado(tMazo & mazo){
 	// Primero rellenamos el array. Recorremos las distintas cartas que existen
 	// Y vemos cuantas cartas de ese tipo hay en el array y las metemos
 	unsigned j = 0; // Posicion de la carta en el array, al final será tamaño -1
@@ -15,8 +28,12 @@ void crearMazoAleatorio(tMazo & mazo){
 			mazo[j] = static_cast<tCarta>(i);
 		}
 	}
+}
+
+void crearMazoAleatorio(tMazo & mazo){
+	crearMazoOrdenado(mazo);
 	// Finalmente, lo desordenamos
-	random_shuffle(mazo, mazo + j + 1);
+	std::random_shuffle(mazo, mazo + NUM_CARTAS);
 }
 
 bool sacar(tMazo & mazo, tCarta & carta){
@@ -30,4 +47,19 @@ bool sacar(tMazo & mazo, tCarta & carta){
 	mazo[NUM_CARTAS-1] = NADA;
 
 	return carta != NADA;
+}
+
+bool insertar(tMazo & mazo, const tCarta carta){
+	bool encontrado = false;
+	unsigned i;
+
+	// Buscamos el primer hueco vacío
+	for(i = 0; i < NUM_CARTAS && !encontrado; i++){
+		if(mazo[i] == NADA) {
+			mazo[i] = carta;
+			encontrado = true;
+		};
+	}
+
+	return encontrado;
 }
