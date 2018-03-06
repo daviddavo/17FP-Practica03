@@ -1,9 +1,9 @@
 #include <iostream> // Only for testing
-#include "mazo.h"
+#include "secuenciaCartas.h"
 
 void imprimirMazo(tMazo mazo){
-	for(unsigned i = 0; i < NUM_CARTAS; i++){
-		std::cout << carta2string(mazo[i]) << std::endl;
+	for(unsigned i = 0; i < mazo.contador; i++){
+		std::cout << mazo.arrayCarta[i] << std::endl;
 	}
 }
 
@@ -15,7 +15,7 @@ int main(){
 	tCarta carta;
 	sacar(mazoPrueba, carta);
 	std::cout << "#######" << std::endl;
-	std::cout << "Sacada " << carta2string(carta) << std::endl;
+	std::cout << "Sacada " << carta << std::endl;
 	imprimirMazo(mazoPrueba);
 
 	std::cout << "#######" << std::endl;
