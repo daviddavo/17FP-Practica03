@@ -1,4 +1,8 @@
+#include <string>
+#include <algorithm> // min
+#include <fstream>
 #include "puntuaciones.h"
+using namespace std;
 
 bool operator<(const tPuntuacion & p1, const tPuntuacion & p2){
     return p1.puntos < p2.puntos;

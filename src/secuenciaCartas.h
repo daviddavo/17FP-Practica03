@@ -9,7 +9,8 @@ const int MAX_GIRODERECHA = 8;
 const int MAX_GIROIZQUIERDA = 8;
 const int MAX_PISTOLALASER = 4;
 
-typedef enum { AVANZAR, GIROIZQUIERDA, GIRODERECHA, LASER } tCarta;
+// NADA sirve para saber el numbero de cartas distintas
+typedef enum { AVANZAR, GIROIZQUIERDA, GIRODERECHA, LASER, NADA } tCarta;
 
 typedef tCarta tArrayCarta [MAX_CARTAS];
 
