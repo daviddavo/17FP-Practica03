@@ -10,8 +10,7 @@
 
 #include <string>
 
-const unsigned MAX_FILAS = 8;
-const unsigned NUM_TIPOS_CASILLAS = 6;
+#include "config.h"
 
 typedef enum {NORTE, SUR, ESTE, OESTE} tDir;
 typedef enum {VACIA, HIELO, MURO, CAJA, JOYA, TORTUGA} tEstadoCasilla;
@@ -25,7 +24,6 @@ typedef struct {
 } tCasilla;
 
 typedef tCasilla tTablero[MAX_FILAS][MAX_FILAS];
-
 
 bool cargarTablero(tTablero, const std::string, const unsigned);
 void mostrarTablero(const tTablero);

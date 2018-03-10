@@ -1,11 +1,9 @@
 #ifndef SRC_COLOR_H_
 #define SRC_COLOR_H_
-
-const unsigned paleta[NUM_TIPOS_CASILLAS+MAX_JUGADORES] = {1,11,7,4,12,5,13,9,10,3};
-const unsigned COLOR_MANO = 1;
-
 // ARRAY PARA CONVERTIR LA PALETA DE WINDOWS A LINUX
 // Solo en Background, foreground = background - 10
+
+#include "config.h"
 
 const unsigned w2l[16] = {
     40, // Negro
@@ -28,5 +26,6 @@ const unsigned w2l[16] = {
 
 void colorFondo(const unsigned);
 void colorReset();
+void clear();
 
 #endif /* SRC_COLOR_H_ */

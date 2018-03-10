@@ -4,7 +4,8 @@
 // Si no, da un error al no reconocer string
 #include <string>
 
-const unsigned MAX_JUGADORES = 4;
+#include "config.h"
+
 const std::string FILE_PUNT = "puntuaciones.txt";
 // No es necesario usar NUM_LINEAS si usamos .eof()
 

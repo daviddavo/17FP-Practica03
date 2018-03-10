@@ -1,5 +1,3 @@
-#include <algorithm>
-#include <string>
 #include "mazo.h"
 
 std::string carta2string(const tCarta carta){

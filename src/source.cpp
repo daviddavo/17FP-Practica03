@@ -1,8 +1,5 @@
 #include <iostream> // Only for testing
-#include "mazo.h"
-#include "puntuaciones.h"
-#include "tablero.h"
-#include "juego.h"
+#include "cli.h"
 
 using namespace std;
 
@@ -46,6 +43,8 @@ int main(){
     jugadores[2].nombre = "Maria";
     jugadores[3].nombre = "Timmy";
     mostrarJugadores(jugadores, 4, 2);
+
+    anyKey();
 
 	return 0;
 }
