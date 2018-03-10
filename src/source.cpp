@@ -1,5 +1,8 @@
 #include <iostream> // Only for testing
+#include "mazo.h"
 #include "puntuaciones.h"
+#include "tablero.h"
+#include "juego.h"
 
 using namespace std;
 
@@ -33,6 +36,16 @@ int main(){
     mostrarPuntuaciones(puntuaciones);
     guardarPuntuaciones(puntuaciones);
     */
+
+    tJugador jugadores[4];
+    for(unsigned i = 1; i < 4+1; i++){
+        jugadores[i-1].id = i;
+    }
+    jugadores[0].nombre = "Juan";
+    jugadores[1].nombre = "Pedro";
+    jugadores[2].nombre = "Maria";
+    jugadores[3].nombre = "Timmy";
+    mostrarJugadores(jugadores, 4, 2);
 
 	return 0;
 }

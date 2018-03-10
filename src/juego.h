@@ -1,10 +1,3 @@
-/*
- * juego.h
- *
- *  Created on: 9 mar. 2018
- *      Author: davo
- */
-
 #ifndef SRC_JUEGO_H_
 #define SRC_JUEGO_H_
 
@@ -15,6 +8,7 @@ typedef unsigned tMano[NADA];
 
 typedef struct{
     std::string nombre;
+    unsigned id;
     tMazo mazo; // Cartas en su mazo
     tMano mano; // Cartas en la mano del jugador
     unsigned x; // Corrdenadas
@@ -22,9 +16,9 @@ typedef struct{
 } tJugador;
 
 typedef struct{
-    unsigned jugadores;
+    unsigned nJugadores;
     unsigned turno;
-    tJugador jugador[MAX_JUGADORES];
+    tJugador jugadores[MAX_JUGADORES];
     tTablero tablero;
 } tJuego;
 
@@ -36,5 +30,6 @@ bool accionSecuencia(tJuego & juego, tMazo & cartas);
 void cambiarTurno (tJuego & juego);
 bool esFinDePartida(tJuego & juego);
 void incluirCarta(tMano &mano, tCarta carta);
+void mostrarJugadores(const tJugador [MAX_JUGADORES], const unsigned, const unsigned); // DEBUGGING
 
 #endif /* SRC_JUEGO_H_ */

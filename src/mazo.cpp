@@ -1,6 +1,6 @@
 #include <algorithm>
 #include <string>
-#include "mazo.h";
+#include "mazo.h"
 
 std::string carta2string(const tCarta carta){
 	switch(carta){
