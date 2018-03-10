@@ -1,13 +1,10 @@
 #include <iostream> // Only for testing
-#include "secuenciaCartas.h"
+#include "tablero.h"
 
-void imprimirMazo(tMazo mazo){
-	for(unsigned i = 0; i < mazo.contador; i++){
-		std::cout << mazo.arrayCarta[i] << std::endl;
-	}
-}
+using namespace std;
 
 int main(){
+    /*
 	tMazo mazoPrueba;
 	crearMazoAleatorio(mazoPrueba);
 	imprimirMazo(mazoPrueba);
@@ -21,6 +18,11 @@ int main(){
 	std::cout << "#######" << std::endl;
 	std::cout << insertar(mazoPrueba, LASER) << std::endl;
 	imprimirMazo(mazoPrueba);
+	*/
+
+    tTablero tablero;
+    cout << "Tablero leido: " << cargarTablero(tablero, "tableros.txt", 3) << endl;
+    mostrarTablero(tablero);
 
 	return 0;
 }

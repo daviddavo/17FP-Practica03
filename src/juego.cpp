@@ -18,7 +18,7 @@ string pedirFichero(){
 }
 
 unsigned pedirJugadores(){
-    int j;
+    unsigned j;
     cout << "Introduce el numero de jugadores (1-" << MAX_JUGADORES<< "): ";
     cin >> j;
     while(j < 1 || j > MAX_FILAS){
@@ -26,12 +26,12 @@ unsigned pedirJugadores(){
         cin >> j;
     }
 
-    return static_cast<unsigned>(j);
+    return j;
 }
 
 bool cargarJuego(tJuego & juego){
     // s = success
-    bool s = cargarTablero(juego.tablero, pedirFichero());
+    bool s = cargarTablero(juego.tablero, pedirFichero(), pedirJugadores());
     juego.jugadores = pedirJugadores();
 
     return s;

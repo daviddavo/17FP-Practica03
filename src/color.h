@@ -1,18 +1,12 @@
-/*
- * color.h
- *
- *  Created on: 9 mar. 2018
- *      Author: davo
- */
-
 #ifndef SRC_COLOR_H_
 #define SRC_COLOR_H_
 
-const int paleta[NUM_TIPOS_CASILLAS+MAX_JUGADORES] = {1,11,7,4,12,5,13,9,10,3};
+const unsigned paleta[NUM_TIPOS_CASILLAS+MAX_JUGADORES] = {1,11,7,4,12,5,13,9,10,3};
 
 // ARRAY PARA CONVERTIR LA PALETA DE WINDOWS A LINUX
 // Solo en Background, foreground = background - 10
-unsigned w2l[16] = {
+
+const unsigned w2l[16] = {
     40, // Negro
     44, // Azul
     42, // Verde
@@ -30,5 +24,8 @@ unsigned w2l[16] = {
     103, // Amarillo claro
     107, // Blanco claro -> Blanco
 }; // Reset es el 49
+
+void colorFondo(const unsigned);
+void colorReset();
 
 #endif /* SRC_COLOR_H_ */

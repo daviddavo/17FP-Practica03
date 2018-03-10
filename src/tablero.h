@@ -8,7 +8,10 @@
 #ifndef SRC_TABLERO_H_
 #define SRC_TABLERO_H_
 
+#include <string>
+
 const unsigned MAX_FILAS = 8;
+const unsigned NUM_TIPOS_CASILLAS = 6;
 
 typedef enum {NORTE, SUR, ESTE, OESTE} tDir;
 typedef enum {VACIA, HIELO, MURO, CAJA, JOYA, TORTUGA} tEstadoCasilla;
@@ -24,7 +27,7 @@ typedef struct {
 typedef tCasilla tTablero[MAX_FILAS][MAX_FILAS];
 
 
-bool cargarTablero(tTablero, const std::string);
+bool cargarTablero(tTablero, const std::string, const unsigned);
 void mostrarTablero(const tTablero);
 
 #endif /* SRC_TABLERO_H_ */

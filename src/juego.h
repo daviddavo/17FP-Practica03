@@ -8,7 +8,7 @@
 #ifndef SRC_JUEGO_H_
 #define SRC_JUEGO_H_
 
-typedef enum {AVANZA, DERECHA, IZQUIERDA, LASER, SALIR} tTecla;
+typedef enum {AVANZA, DERECHA, IZQUIERDA, DISPARO, SALIR} tTecla;
 
 // Usaremos los índices segun el enum tCarta: AVANZAR = 0, GIROIZQUIERDA = 1...
 typedef unsigned tMano[NADA];

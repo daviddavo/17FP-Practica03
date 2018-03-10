@@ -1,6 +1,9 @@
 #ifndef SRC_MODULES_PUNTUACIONES_H_
 #define SRC_MODULES_PUNTUACIONES_H_
 
+// Si no, da un error al no reconocer string
+#include <string>
+
 const unsigned MAX_JUGADORES = 4;
 const std::string FILE_PUNT = "puntuaciones.txt";
 // No es necesario usar NUM_LINEAS si usamos .eof()
