@@ -1,5 +1,6 @@
 #include <string>
 #include <algorithm> // min
+#include <iostream>
 #include <fstream>
 #include "puntuaciones.h"
 using namespace std;
@@ -8,7 +9,31 @@ bool operator<(const tPuntuacion & p1, const tPuntuacion & p2){
     return p1.puntos < p2.puntos;
 }
 
-bool actualizarPuntuacion(tPuntuaciones & puntuaciones, const std::string nombre, const unsigned nuevos){
+bool guardarPuntuaciones(const tPuntuaciones puntuaciones){
+    ofstream file;
+    file.open(FILE_PUNT);
+    for(unsigned i = 0; i < MAX_JUGADORES && !file.fail(); i++){
+        file << puntuaciones[i].nombre << " " << puntuaciones[i].puntos << endl;
+    }
+
+    return file.fail();
+}
+
+bool cargarPuntuaciones(tPuntuaciones puntuaciones){
+    ifstream file;
+    file.open(FILE_PUNT);
+
+    for(unsigned i = 0; i < MAX_JUGADORES && !file.fail(); i++){
+        tPuntuacion puntuacion;
+        file >> puntuacion.nombre >> puntuacion.puntos;
+        puntuaciones[i] = puntuacion;
+    }
+
+    file.close();
+    return !file.fail();
+}
+
+bool actualizarPuntuacion(tPuntuaciones puntuaciones, const std::string nombre, const unsigned nuevos){
     bool f = false; // found
     unsigned vacio = MAX_JUGADORES;
     // Buscamos el jugador y lo actualizamos
@@ -44,4 +69,12 @@ bool actualizarPuntuacion(tPuntuaciones & puntuaciones, const std::string nombre
     }
 
     return f;
+}
+
+void mostrarPuntuaciones(const tPuntuaciones puntuaciones){
+    for(unsigned int i = 0; i < MAX_JUGADORES; i++){
+        if(puntuaciones[i].nombre != ""){
+            cout << puntuaciones[i].nombre << ": " << puntuaciones[i].puntos << " punto(s)" << endl;
+        }
+    }
 }
