@@ -1,6 +1,8 @@
+#include "tablero.h"
+
 #include <iostream>
 #include <fstream>
-#include "tablero.h"
+
 #include "puntuaciones.h" // Dependencia de color.h
 #include "color.h"
 
@@ -78,38 +80,4 @@ bool cargarTablero(tTablero tablero, const string fname, const unsigned jugadore
     file.close();
 
     return !error && i < MAX_JUGADORES;
-}
-
-void imprimirCasilla(const tCasilla casilla){
-    // Por defecto color fondo es el de la paleta
-    if(casilla.estado!=TORTUGA) colorFondo(paleta[casilla.estado]);
-
-    switch(casilla.estado){
-    case VACIA: cout << "  "; break;
-    case HIELO: cout << "**"; break;
-    case MURO: cout << "||"; break;
-    case CAJA: cout << "[]"; break;
-    // Sé que dijo 00, pero en la terminal quedan raro
-    case JOYA: cout << "00"; break;
-    case TORTUGA:
-        colorFondo(paleta[casilla.tortuga.numero+NUM_TIPOS_CASILLAS]);
-        switch(casilla.tortuga.direccion){
-        case NORTE: cout << "^^"; break;
-        case SUR: cout << "vv"; break;
-        case ESTE: cout << ">>"; break;
-        case OESTE: cout << "<<"; break;
-        }
-    }
-
-    colorReset();
-}
-
-void mostrarTablero(const tTablero tablero){
-    // Asumimos que se ha hecho ya cls
-    for(unsigned i = 0; i < MAX_FILAS; i++){
-        for(unsigned j = 0; j < MAX_FILAS; j++){
-            imprimirCasilla(tablero[i][j]);
-        }
-        cout << endl;
-    }
 }

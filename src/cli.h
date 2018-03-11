@@ -31,10 +31,10 @@ void mostrarJuego(const tJuego & juego);
 void mostrarJugadores(const tJugador [MAX_JUGADORES], const unsigned, const unsigned); // DEBUGGING
 void flushLog(tLog);
 void addMsg(tLog, const std::string);
-void mostrarLog(const tLog); // DEBUGGING
 std::string pedirFichero();
 unsigned pedirJugadores();
 void anyKey();
 tecla::tTecla leerTecla();
+void mostrarBody(const tTablero, const tLog);
 
 #endif /* SRC_CLI_H_ */

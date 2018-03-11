@@ -5,6 +5,7 @@
 
 #include "config.h"
 
+
 const unsigned w2l[16] = {
     40, // Negro
     44, // Azul
@@ -25,6 +26,7 @@ const unsigned w2l[16] = {
 }; // Reset es el 49
 
 void colorFondo(const unsigned);
+void colorTexto(const unsigned);
 void colorReset();
 void clear();
 

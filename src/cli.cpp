@@ -48,18 +48,12 @@ void flushLog(tLog log){
     }
 }
 
-void mostrarLog(const tLog log){
-    for(unsigned i = 0; i < LOG_SIZE; i++){
-        cout << log[i] << endl;
-    }
-}
-
 void mostrarJugador(const tJugador & jugador, const unsigned width, const bool jugando){
     // Le ponemos color a la tabla:
     colorFondo(paleta[NUM_TIPOS_CASILLAS+jugador.id-1]);
     // Calculamos el número de espacios necesarios para mostrar al jugador
     unsigned nSpaces = width - jugador.nombre.length() + 1;
-    cout << (jugando?'>':' ') << ' ' << jugador.id << '.';
+    cout << (jugando?'>':' ') << ' ' << jugador.id+1 << '.';
     // Mostramos los espacios
     for(unsigned i = 0; i < nSpaces; i++) cout << ' ';
     // Mostramos el nombre del jugador
@@ -91,11 +85,12 @@ void mostrarJugadores(const tJugador jugadores[MAX_JUGADORES], const unsigned nJ
 
 void mostrarJuego(const tJuego & juego){
     clear();
-    mostrarTablero(juego.tablero);
+    colorTexto(COLOR_CABECERA);
+    cout << CABECERA;
+    colorReset();
+    mostrarBody(juego.tablero, juego.log);
     cout << endl << "JUGADORES:" << endl;
     mostrarJugadores(juego.jugadores, juego.nJugadores, juego.turno);
-    cout << endl;
-    mostrarLog(juego.log);
 }
 
 #ifdef __linux__
@@ -117,23 +112,73 @@ int getch(){
 
 void anyKey(){
     cout << "Pulse cualquier tecla para continuar..." << endl;
+    cin.ignore();
     getch();
 }
 
 tecla::tTecla leerTecla(){
     cin.sync();
     int dir = getch();
-    if (dir == 0xe0){
+    cout << "Dir " << dir << endl;
+    if (dir == 0xe0 || dir == 27){
         dir = getch();
+        cout << "Dir " << dir << endl;
     }
 
     switch(dir){
     case 10:
     case 13: return tecla::SALIR; // Enter
+    case 65: // On linux
     case 72: return tecla::AVANZA;
+    case 67: // On linux
     case 77: return tecla::DERECHA;
+    case 68: // On linux
     case 75: return tecla::IZQUIERDA;
     case ' ': return tecla::DISPARO;
     default: return tecla::NADA;
+    }
+}
+
+void imprimirCasilla(const tCasilla casilla){
+    // Por defecto color fondo es el de la paleta
+    if(casilla.estado!=TORTUGA) colorFondo(paleta[casilla.estado]);
+
+    switch(casilla.estado){
+    case VACIA: cout << "  "; break;
+    case HIELO: cout << "**"; break;
+    case MURO: cout << "||"; break;
+    case CAJA: cout << "[]"; break;
+    // Sé que dijo 00, pero en la terminal quedan raro
+    case JOYA: cout << "00"; break;
+    case TORTUGA:
+        colorFondo(paleta[casilla.tortuga.numero+NUM_TIPOS_CASILLAS]);
+        switch(casilla.tortuga.direccion){
+        case NORTE: cout << "^^"; break;
+        case SUR: cout << "vv"; break;
+        case ESTE: cout << ">>"; break;
+        case OESTE: cout << "<<"; break;
+        }
+    }
+
+    colorReset();
+}
+
+void mostrarBody(const tTablero tablero, const tLog log){
+    string head = "";
+    for(unsigned i = 0; i < MAX_FILAS*2; i++){
+        head += " ";
+    }
+    head += " | MENSAJES:";
+    // cout << head << endl; // No me gusta demasiado como queda
+
+    for(unsigned i = 0; i < MAX_FILAS; i++){
+        // Primero mostramos la linea del tablero
+        for(unsigned j = 0; j < MAX_FILAS; j++){
+            imprimirCasilla(tablero[i][j]);
+        }
+        // Solo se imprime el log si se puede
+        cout << " | " << ((i<LOG_SIZE)?log[i]:"");
+
+        cout << endl;
     }
 }

@@ -18,8 +18,13 @@
         std::cout << "\e[" << w2l[color] << "m";
     }
 
+    void colorTexto(const unsigned color){
+        std::cout << "\e[" << (w2l[color]-10) << "m";
+    }
+
+    // 49-> reset back, 39 -> reset fore, 0 -> reset all
     void colorReset(){
-        std::cout << "\e[0m";
+        std::cout << "\e[49;" << (w2l[COLOR_TEXTO]-10) << "m";
     }
 
     void clear(){

@@ -2,6 +2,7 @@
 #define SRC_JUEGO_H_
 
 #include <string>
+#include <algorithm>
 
 #include "mazo.h"
 #include "tablero.h"
@@ -26,12 +27,15 @@ typedef struct{
     std::string log[LOG_SIZE];
 } tJuego;
 
-bool cargarJuego(tJuego juego);
+bool cargarJuego(tJuego & juego);
 bool ejecutarTurno(tJuego & juego);
 bool accionRobar(tJuego & juego);
 bool accionSecuencia(tJuego & juego, tMazo & cartas);
 void cambiarTurno (tJuego & juego);
 bool esFinDePartida(tJuego & juego);
 void incluirCarta(tMano &mano, tCarta carta);
+
+// DEBUG ONLY
+bool avanzar(tJuego &);
 
 #endif /* SRC_JUEGO_H_ */

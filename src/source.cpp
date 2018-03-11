@@ -1,6 +1,7 @@
 #include <iostream> // Only for testing
 #include <string>
 
+#include "juego.h"
 #include "cli.h"
 
 using namespace std;
@@ -47,6 +48,14 @@ int main(){
     jugadores[3].nombre = "Timmy";
     mostrarJugadores(jugadores, 4, 2);
     */
+
+    tJuego juego;
+    cargarJuego(juego);
+    juego.turno = 0;
+    juego.jugadores[0].nombre = "Davo";
+    juego.jugadores[1].nombre = "Ela";
+    mostrarJuego(juego);
+    ejecutarTurno(juego);
 
 	return 0;
 }
