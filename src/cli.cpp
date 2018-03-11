@@ -33,6 +33,27 @@ string carta2str(const tCarta carta){
     }
 }
 
+// La función de log es poder mostrar los últimos mensajes sin tener que perderlos,
+void addMsg(tLog log, const string msg){
+    for(unsigned i = LOG_SIZE -1; i > 0; i--){
+        log[i] = log[i-1];
+    }
+
+    log[0] = msg;
+}
+
+void flushLog(tLog log){
+    for(unsigned i = 0; i < LOG_SIZE; i++){
+        log[i] = "";
+    }
+}
+
+void mostrarLog(const tLog log){
+    for(unsigned i = 0; i < LOG_SIZE; i++){
+        cout << log[i] << endl;
+    }
+}
+
 void mostrarJugador(const tJugador & jugador, const unsigned width, const bool jugando){
     // Le ponemos color a la tabla:
     colorFondo(paleta[NUM_TIPOS_CASILLAS+jugador.id-1]);
@@ -73,6 +94,8 @@ void mostrarJuego(const tJuego & juego){
     mostrarTablero(juego.tablero);
     cout << endl << "JUGADORES:" << endl;
     mostrarJugadores(juego.jugadores, juego.nJugadores, juego.turno);
+    cout << endl;
+    mostrarLog(juego.log);
 }
 
 #ifdef __linux__
@@ -93,7 +116,7 @@ int getch(){
 #endif
 
 void anyKey(){
-    cout << endl << "Pulse cualquier tecla para continuar..." << endl;
+    cout << "Pulse cualquier tecla para continuar..." << endl;
     getch();
 }
 
@@ -105,7 +128,8 @@ tecla::tTecla leerTecla(){
     }
 
     switch(dir){
-    case 'CR': return tecla::SALIR; // Enter
+    case 10:
+    case 13: return tecla::SALIR; // Enter
     case 72: return tecla::AVANZA;
     case 77: return tecla::DERECHA;
     case 75: return tecla::IZQUIERDA;

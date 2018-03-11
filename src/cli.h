@@ -25,10 +25,16 @@ namespace tecla{
     typedef enum {AVANZA, DERECHA, IZQUIERDA, DISPARO, NADA, SALIR} tTecla;
 }
 
+typedef std::string tLog[LOG_SIZE];
+
 void mostrarJuego(const tJuego & juego);
 void mostrarJugadores(const tJugador [MAX_JUGADORES], const unsigned, const unsigned); // DEBUGGING
+void flushLog(tLog);
+void addMsg(tLog, const std::string);
+void mostrarLog(const tLog); // DEBUGGING
 std::string pedirFichero();
 unsigned pedirJugadores();
 void anyKey();
+tecla::tTecla leerTecla();
 
 #endif /* SRC_CLI_H_ */

@@ -1,6 +1,8 @@
 #ifndef SRC_JUEGO_H_
 #define SRC_JUEGO_H_
 
+#include <string>
+
 #include "mazo.h"
 #include "tablero.h"
 
@@ -21,6 +23,7 @@ typedef struct{
     unsigned turno;
     tJugador jugadores[MAX_JUGADORES];
     tTablero tablero;
+    std::string log[LOG_SIZE];
 } tJuego;
 
 bool cargarJuego(tJuego juego);
