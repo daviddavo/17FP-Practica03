@@ -17,14 +17,16 @@ typedef struct{
     tMano mano; // Cartas en la mano del jugador
     unsigned x; // Corrdenadas
     unsigned y;
+    bool jugando;
 } tJugador;
 
 typedef struct{
-    unsigned nJugadores;
-    unsigned turno;
-    tJugador jugadores[MAX_JUGADORES];
-    tTablero tablero;
-    std::string log[LOG_SIZE];
+    unsigned nJugadores; // Numero de jugadores, siempre menor que MAX_JUGADORES
+    unsigned turno; // Turno actual 0 a MAX_JUGADORES-1
+    unsigned joya; // Ultimo jugador en conseguir una joya
+    tJugador jugadores[MAX_JUGADORES]; // Almacena los jugadores
+    tTablero tablero; // Almacena el tablero
+    std::string log[LOG_SIZE]; // Los mensajes para la interfaz
 } tJuego;
 
 bool cargarJuego(tJuego & juego);
@@ -35,6 +37,7 @@ void cambiarTurno (tJuego & juego);
 bool esFinDePartida(tJuego & juego);
 void incluirCarta(tMano &mano, tCarta carta);
 bool calcularDir(unsigned &, unsigned &, const tDir);
+void jugar();
 
 // DEBUG ONLY
 bool avanzar(tJuego &);

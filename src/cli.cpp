@@ -89,11 +89,15 @@ void mostrarJugadores(const tJugador jugadores[MAX_JUGADORES], const unsigned nJ
     }
 }
 
-void mostrarJuego(const tJuego & juego){
-    clear();
+void cabecera(){
     colorTexto(COLOR_CABECERA);
     cout << CABECERA;
     colorReset();
+}
+
+void mostrarJuego(const tJuego & juego){
+    clear();
+    cabecera()
     mostrarBody(juego.tablero, juego.log);
     cout << endl << "JUGADORES:" << endl;
     mostrarJugadores(juego.jugadores, juego.nJugadores, juego.turno);
@@ -212,4 +216,14 @@ void mostrarBody(const tTablero tablero, const tLog log){
 
         cout << endl;
     }
+}
+
+bool continuar(const tJuego & juego, const tPuntuaciones puntuaciones){
+    clear();
+    cabecera();
+    cout << endl;
+    mostrarPuntuaciones(puntuaciones);
+    cout << endl << endl;
+    cout << "\t\t\t Desea continuar? (y/n)";
+    // TODO:PEDIR TECLA Y RETORNAR
 }

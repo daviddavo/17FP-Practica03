@@ -63,7 +63,10 @@ bool avanzar(tJuego & juego){
             if(!empujar(juego, x2, y2, tortuga.direccion))
                 addMsg(juego.log, "No puedes empujar la caja");
             break;
-        case JOYA: joya = true; break;
+        case JOYA:
+            joya = true;
+            juego.joya = juego.turno;
+            /* no break */
         default:
             addMsg(juego.log, juego.jugadores[juego.turno].nombre + " se ha movido a " + to_string(x2) + "," + to_string(y2));
             juego.tablero[x2][y2].estado = TORTUGA;
@@ -135,8 +138,8 @@ bool accionSecuencia(tJuego & juego, tMano & cartas){
         if(carta != NADA){
             cartas[carta]--;
             insertar(jugador.mazo, carta);
-            mostrarJuego(juego);
         }
+        mostrarJuego(juego);
     }
 
     // mostrarJuego(juego);
@@ -154,43 +157,83 @@ bool accionRobar(tJuego & juego){
     return success;
 }
 
-bool ejecutarTurno(tJuego & juego){
-    bool joya = false;
-    tecla::tTecla tecla;
-
-    addMsg(juego.log, juego.jugadores[juego.turno].nombre + ", juegas o robas? (R/J)");
-    mostrarJuego(juego);
-    cin.ignore();
-
-    do{
-        tecla = leerTecla();
-    }while(tecla != tecla::ROBAR && tecla != tecla::JUGAR);
-
-    juego.log[0] = juego.jugadores[juego.turno].nombre;
-    if(tecla == tecla::ROBAR){
-        if(accionRobar(juego)){
-            juego.log[0] += " ha robado una carta";
-        }else{
-            juego.log[0] += " no le quedan cartas en el mazo";
-        }
-    }else{
-        juego.log[0] += " juega su turno";
-        mostrarJuego(juego);
-        joya = accionSecuencia(juego, juego.jugadores[juego.turno].mano);
+bool manoVacia(const tMano mano){
+    // Retorna si una mano está vacía
+    bool vacia = true;
+    for(unsigned i = 0; i < NADA && vacia; i++){
+        vacia = mano[i] == 0;
     }
 
-    addMsg(juego.log, "Fin del turno de " + juego.jugadores[juego.turno].nombre);
+    return vacia;
+}
+
+unsigned jugadoresJugando(const tJuego & juego){
+    unsigned cnt = 0;
+    for(unsigned i = 0; i < juego.nJugadores; i++)
+        cnt += juego.jugadores[i].jugando?1:0;
+    return cnt;
+}
+
+bool ejecutarTurno(tJuego & juego){
+    bool joya;
+    tecla::tTecla tecla;
+
+    if(manoVacia(juego.jugadores[juego.turno].mano)){
+        addMsg(juego.log, juego.jugadores[juego.turno].nombre + " no tienes cartas, tienes que robar");
+        accionRobar(juego);
+    }else{
+
+        addMsg(juego.log, juego.jugadores[juego.turno].nombre + ", juegas o robas? (R/J)");
+        mostrarJuego(juego);
+        // cin.ignore();
+
+        do{
+            tecla = leerTecla();
+        }while(tecla != tecla::ROBAR && tecla != tecla::JUGAR);
+
+        juego.log[0] = juego.jugadores[juego.turno].nombre;
+        if(tecla == tecla::ROBAR){
+            if(accionRobar(juego)){
+                juego.log[0] += " ha robado una carta";
+            }else{
+                juego.log[0] += " no le quedan cartas en el mazo, toca jugar las que tienes";
+                tecla = tecla::ROBAR;
+            }
+        }
+        if(tecla != tecla::ROBAR){
+            juego.log[0] += " juega su turno";
+            mostrarJuego(juego);
+            joya = accionSecuencia(juego, juego.jugadores[juego.turno].mano);
+        }
+    }
+    if(joya){
+        addMsg(juego.log, juego.jugadores[juego.joya].nombre + " ha conseguido una joya");
+        juego.jugadores[juego.joya].jugando = false;
+    }else{
+        addMsg(juego.log, "Fin del turno de " + juego.jugadores[juego.turno].nombre);
+    }
     mostrarJuego(juego);
 
     return joya;
 }
 
 void cambiarTurno(tJuego & juego){
+    do{
     juego.turno = (juego.turno+1)%juego.nJugadores;
+    // Cuidado con lo siguiente, no llamar a la función cuando haya terminado el juego
+    }while(!juego.jugadores[juego.turno].jugando);
 }
 
 void incluirCarta(tMano & mano, tCarta carta){
     mano[carta]++;
+}
+
+string pedirJugador(const unsigned i){
+    string nombre;
+    cout << "Introduzca el nombre del jugador " << i << " (sin espacios): ";
+    cin >> nombre;
+    cin.sync();
+    return nombre;
 }
 
 bool cargarJuego(tJuego & juego){
@@ -198,23 +241,43 @@ bool cargarJuego(tJuego & juego){
     juego.nJugadores = pedirJugadores();
     // Leemos el tablero
     bool s = cargarTablero(juego.tablero, pedirFichero(), juego.nJugadores);
+    // juego.turno = 0;
 
-    // Asignamos los jugadores buscando las tortugas por el tablero
-    unsigned int i = 0;
-    for(unsigned x = 0; x < MAX_FILAS && i < juego.nJugadores; x++){
-        for(unsigned y = 0; y < MAX_FILAS && i < juego.nJugadores; y++){
-            if(juego.tablero[x][y].estado == TORTUGA){
-                juego.jugadores[i].id = i;
-                juego.jugadores[i].x = x;
-                juego.jugadores[i].y = y;
-                // Ponemos la mano del jugador a 0
-                fill(juego.jugadores[i].mano, juego.jugadores[i].mano+NADA, 0);
-                // Creamos un mazo
-                crearMazoAleatorio(juego.jugadores[i].mazo);
-                i++;
+    if(!s){
+        // Asignamos los jugadores buscando las tortugas por el tablero
+        unsigned int i = 0;
+        for(unsigned x = 0; x < MAX_FILAS && i < juego.nJugadores; x++){
+            for(unsigned y = 0; y < MAX_FILAS && i < juego.nJugadores; y++){
+                if(juego.tablero[x][y].estado == TORTUGA){
+                    juego.jugadores[i].id = i;
+                    juego.jugadores[i].x = x;
+                    juego.jugadores[i].y = y;
+                    juego.jugadores[i].jugando = true;
+                    juego.jugadores[i]. nombre = pedirJugador(i+1);
+                    // Ponemos la mano del jugador a 0
+                    fill(juego.jugadores[i].mano, juego.jugadores[i].mano+NADA, 0);
+                    // Creamos un mazo
+                    crearMazoAleatorio(juego.jugadores[i].mazo);
+                    i++;
+                }
             }
         }
+    }else{
+        cout << "Error al cargar el fichero" << endl;
     }
 
     return s;
+}
+
+void jugar(){
+    tJuego juego;
+    bool salir = false;
+
+    cargarJuego(juego);
+    while(jugadoresJugando(juego) > 1 && !salir){
+        cambiarTurno(juego);
+        if(ejecutarTurno(juego)){
+            salir = !continuar(juego);
+        }
+    }
 }

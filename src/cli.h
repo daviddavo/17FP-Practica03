@@ -12,6 +12,7 @@
 
 #include "color.h"
 #include "juego.h"
+#include "puntuaciones.h"
 
 #ifdef _WIN32_
     #include <conio.h> // Para getch
@@ -38,5 +39,6 @@ void anyKey();
 tecla::tTecla leerTecla();
 void mostrarBody(const tTablero, const tLog);
 bool animateLaser(tJuego &, const tDir, unsigned &, unsigned &, const unsigned);
+void continuar(const tJuego &, const tPuntuaciones); // Pregunta si se desea seguir jugando
 
 #endif /* SRC_CLI_H_ */
