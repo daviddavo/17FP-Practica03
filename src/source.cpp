@@ -52,8 +52,11 @@ int main(){
     tJuego juego;
     cargarJuego(juego);
     juego.turno = 0;
-    juego.jugadores[0].nombre = "Davo";
-    juego.jugadores[1].nombre = "Ela";
+    for(unsigned i = 0; i < 4; i++) juego.jugadores[0].mano[i] = 10;
+    juego.jugadores[0].nombre = "Esto";
+    juego.jugadores[1].nombre = "Es";
+    juego.jugadores[2].nombre = "Una_prueba";
+    juego.jugadores[3].nombre = "De_movimiento";
     mostrarJuego(juego);
     ejecutarTurno(juego);
 

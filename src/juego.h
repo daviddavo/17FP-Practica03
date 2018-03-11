@@ -30,10 +30,11 @@ typedef struct{
 bool cargarJuego(tJuego & juego);
 bool ejecutarTurno(tJuego & juego);
 bool accionRobar(tJuego & juego);
-bool accionSecuencia(tJuego & juego, tMazo & cartas);
+bool accionSecuencia(tJuego & juego, tMano & cartas);
 void cambiarTurno (tJuego & juego);
 bool esFinDePartida(tJuego & juego);
 void incluirCarta(tMano &mano, tCarta carta);
+bool calcularDir(unsigned &, unsigned &, const tDir);
 
 // DEBUG ONLY
 bool avanzar(tJuego &);

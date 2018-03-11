@@ -13,10 +13,10 @@
 #include "config.h"
 
 typedef enum {NORTE, ESTE, SUR, OESTE} tDir;
-typedef enum {VACIA, HIELO, MURO, CAJA, JOYA, TORTUGA} tEstadoCasilla;
-typedef struct{
-    unsigned numero;
-    tDir direccion;
+typedef enum {VACIA, HIELO, MURO, CAJA, JOYA, TORTUGA, ANIMATION_LASER} tEstadoCasilla;
+typedef struct{ // Esta estructura también sirve para laser
+    unsigned numero; // En caso de ANIMATION_LASER, será el color
+    tDir direccion; // Aquí su direccion
 } tTortuga;
 typedef struct {
     tEstadoCasilla estado;

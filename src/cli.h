@@ -6,6 +6,7 @@
 // Sólo habrá que poner include cli.h, y no 6 líneas con includes
 // Incluso se podría poner la cabecera precompilada
 #include <iostream>
+#include <time.h>
 
 #include "config.h"
 
@@ -22,7 +23,7 @@
 #endif
 
 namespace tecla{
-    typedef enum {AVANZA, DERECHA, IZQUIERDA, DISPARO, NADA, SALIR} tTecla;
+    typedef enum {AVANZA, DERECHA, IZQUIERDA, DISPARO, NADA, SALIR, ROBAR, JUGAR} tTecla;
 }
 
 typedef std::string tLog[LOG_SIZE];
@@ -36,5 +37,6 @@ unsigned pedirJugadores();
 void anyKey();
 tecla::tTecla leerTecla();
 void mostrarBody(const tTablero, const tLog);
+bool animateLaser(tJuego &, const tDir, unsigned &, unsigned &, const unsigned);
 
 #endif /* SRC_CLI_H_ */

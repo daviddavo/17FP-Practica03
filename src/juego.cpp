@@ -5,23 +5,43 @@
 
 using namespace std;
 
-void calcularDir(unsigned & x, unsigned & y, const tDir dir){
+bool calcularDir(unsigned & x, unsigned & y, const tDir dir){
+    bool c = false;
     switch(dir){
-    case NORTE: x--; break;
-    case SUR: x++; break;
-    case ESTE: y++; break;
-    case OESTE: y--; break;
+    case NORTE:
+        c = x > 0;
+        if(c) x--;
+        break;
+    case SUR:
+        c = x < MAX_FILAS-1;
+        if(c) x++;
+        break;
+    case ESTE:
+        c = y < MAX_FILAS-1;
+        if(c) y++;
+        break;
+    case OESTE:
+        c = y > 0;
+        if(c) y--;
+        break;
     }
+
+    return c;
 }
 
-void empujar(tJuego & juego, const unsigned x, const unsigned y, const tDir dir){
+bool empujar(tJuego & juego, const unsigned x, const unsigned y, const tDir dir){
     unsigned x2 = x, y2 = y;
-    calcularDir(x2, y2, dir);
-    if(juego.tablero[x2][y2].estado == VACIA){
-        juego.tablero[x2][y2] = juego.tablero[x][y];
-        juego.tablero[x][y].estado = VACIA;
-        avanzar(juego);
+    bool vacia = false;
+    if(calcularDir(x2, y2, dir)){
+        vacia = juego.tablero[x2][y2].estado == VACIA;
+        if(vacia){
+            juego.tablero[x2][y2] = juego.tablero[x][y];
+            juego.tablero[x][y].estado = VACIA;
+            avanzar(juego);
+        }
     }
+
+    return vacia;
 }
 
 bool avanzar(tJuego & juego){
@@ -31,16 +51,18 @@ bool avanzar(tJuego & juego){
     tTortuga tortuga = juego.tablero[x2][y2].tortuga;
 
     cout << tortuga.direccion << endl;
-    calcularDir(x2, y2, tortuga.direccion);
 
-    if(x2 > MAX_FILAS || y2 > MAX_FILAS){
+    if(!calcularDir(x2, y2, tortuga.direccion)){
         addMsg(juego.log, "No puedes moverte a esta casilla, está fuera del tablero");
     }else{
         switch(juego.tablero[x2][y2].estado){
         case HIELO:
         case MURO: addMsg(juego.log, "No puedes avanzar a esa casilla, hay un muro"); break;
         case TORTUGA: addMsg(juego.log, "No puedes ponerte encima de una tortuga"); break;
-        case CAJA: empujar(juego, x2, y2, tortuga.direccion); break;
+        case CAJA:
+            if(!empujar(juego, x2, y2, tortuga.direccion))
+                addMsg(juego.log, "No puedes empujar la caja");
+            break;
         case JOYA: joya = true; break;
         default:
             addMsg(juego.log, juego.jugadores[juego.turno].nombre + " se ha movido a " + to_string(x2) + "," + to_string(y2));
@@ -68,21 +90,53 @@ void gira(tJuego & juego, const bool derecha){
     juego.tablero[x][y].tortuga.direccion = direccion;
 }
 
-bool ejecutarTurno(tJuego & juego){
-    bool joya = false, update;
-    tJugador jugador = juego.jugadores[juego.turno];
+void disparo(tJuego & juego){
+    unsigned x = juego.jugadores[juego.turno].x, y = juego.jugadores[juego.turno].y;
+    tDir dir = juego.tablero[x][y].tortuga.direccion;
+    unsigned tortugaId = juego.tablero[x][y].tortuga.numero;
+    animateLaser(juego, dir, x, y, paleta[NUM_TIPOS_CASILLAS+tortugaId]);
+    if(juego.tablero[x][y].estado == HIELO){
+        juego.tablero[x][y].estado = VACIA;
+        addMsg(juego.log, juego.jugadores[juego.turno].nombre + " ha destruido " + to_string(x) + "," + to_string(y));
+    }else{
+        addMsg(juego.log, juego.jugadores[juego.turno].nombre + " ha disparado, pero ha fallado");
+    }
+}
 
-    while(!joya){
-        update = true;
-        tecla::tTecla tecla = leerTecla();
-        cout << tecla << endl;
+bool accionSecuencia(tJuego & juego, tMano & cartas){
+    bool joya = false;
+    tJugador jugador = juego.jugadores[juego.turno];
+    tecla::tTecla tecla = tecla::NADA;
+    // cin.ignore();
+
+    while(!joya && tecla != tecla::SALIR){
+        tCarta carta = NADA;
+        tecla = leerTecla();
+        cout << tecla << endl; // TODO: DEBUG
         switch(tecla){
-        case tecla::AVANZA: joya = avanzar(juego); break;
-        case tecla::DERECHA: gira(juego, 1); break;
-        case tecla::IZQUIERDA: gira(juego, 0); break;
-        default: update = false;
+        case tecla::AVANZA:
+            if(cartas[AVANZAR] > 0){carta = AVANZAR; joya = avanzar(juego);}
+            else addMsg(juego.log, "No te quedan cartas de avanzar ( ^ )");
+            break;
+        case tecla::DERECHA:
+            if(cartas[GIRODERECHA] > 0){carta = GIRODERECHA; gira(juego, 1);}
+            else addMsg(juego.log, "No te quedan cartas de girar a la derecha ( > )");
+            break;
+        case tecla::IZQUIERDA:
+            if(cartas[GIROIZQUIERDA]){carta = GIROIZQUIERDA; gira(juego, 0);}
+            else addMsg(juego.log, "No te quedan cartas de girar a la izquierda ( < )");
+            break;
+        case tecla::DISPARO:
+            if(cartas[LASER]){carta = LASER; disparo(juego);}
+            else addMsg(juego.log, "No te quedan cartas de disparo ( ~ )");
+            break;
+        default: break;
         }
-        if(update) mostrarJuego(juego);
+        if(carta != NADA){
+            cartas[carta]--;
+            insertar(jugador.mazo, carta);
+            mostrarJuego(juego);
+        }
     }
 
     // mostrarJuego(juego);
@@ -95,9 +149,48 @@ bool accionRobar(tJuego & juego){
     tCarta carta;
     bool success = sacar(juego.jugadores[juego.turno].mazo, carta);
     if(success){
-        juego.jugadores[juego.turno].mano[carta]++;
+        incluirCarta(juego.jugadores[juego.turno].mano, carta);
     }
     return success;
+}
+
+bool ejecutarTurno(tJuego & juego){
+    bool joya = false;
+    tecla::tTecla tecla;
+
+    addMsg(juego.log, juego.jugadores[juego.turno].nombre + ", juegas o robas? (R/J)");
+    mostrarJuego(juego);
+    cin.ignore();
+
+    do{
+        tecla = leerTecla();
+    }while(tecla != tecla::ROBAR && tecla != tecla::JUGAR);
+
+    juego.log[0] = juego.jugadores[juego.turno].nombre;
+    if(tecla == tecla::ROBAR){
+        if(accionRobar(juego)){
+            juego.log[0] += " ha robado una carta";
+        }else{
+            juego.log[0] += " no le quedan cartas en el mazo";
+        }
+    }else{
+        juego.log[0] += " juega su turno";
+        mostrarJuego(juego);
+        joya = accionSecuencia(juego, juego.jugadores[juego.turno].mano);
+    }
+
+    addMsg(juego.log, "Fin del turno de " + juego.jugadores[juego.turno].nombre);
+    mostrarJuego(juego);
+
+    return joya;
+}
+
+void cambiarTurno(tJuego & juego){
+    juego.turno = (juego.turno+1)%juego.nJugadores;
+}
+
+void incluirCarta(tMano & mano, tCarta carta){
+    mano[carta]++;
 }
 
 bool cargarJuego(tJuego & juego){
@@ -116,6 +209,8 @@ bool cargarJuego(tJuego & juego){
                 juego.jugadores[i].y = y;
                 // Ponemos la mano del jugador a 0
                 fill(juego.jugadores[i].mano, juego.jugadores[i].mano+NADA, 0);
+                // Creamos un mazo
+                crearMazoAleatorio(juego.jugadores[i].mazo);
                 i++;
             }
         }

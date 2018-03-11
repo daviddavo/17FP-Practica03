@@ -2,6 +2,12 @@
 
 using namespace std;
 
+void _sleep(unsigned milsec){
+    // Usando time.h
+    clock_t fin = clock() + milsec * CLOCKS_PER_SEC/1000;
+    while(clock() < fin);
+}
+
 string pedirFichero(){
     string fname;
 
@@ -50,7 +56,7 @@ void flushLog(tLog log){
 
 void mostrarJugador(const tJugador & jugador, const unsigned width, const bool jugando){
     // Le ponemos color a la tabla:
-    colorFondo(paleta[NUM_TIPOS_CASILLAS+jugador.id-1]);
+    colorFondo(paleta[NUM_TIPOS_CASILLAS+jugador.id]);
     // Calculamos el número de espacios necesarios para mostrar al jugador
     unsigned nSpaces = width - jugador.nombre.length() + 1;
     cout << (jugando?'>':' ') << ' ' << jugador.id+1 << '.';
@@ -61,7 +67,7 @@ void mostrarJugador(const tJugador & jugador, const unsigned width, const bool j
     colorReset();
     // Ahora mostramos la mano
     for(unsigned i = 0; i < NADA; i++){
-        cout << ((jugador.mano[i] > 10)?" ":"  ") << jugador.mano[i];
+        cout << ((jugador.mano[i] > 9)?" ":"  ") << jugador.mano[i];
         colorFondo(COLOR_MANO);
         cout << ' ' << carta2str(static_cast<tCarta>(i)) << ' ';
         colorReset();
@@ -119,21 +125,27 @@ void anyKey(){
 tecla::tTecla leerTecla(){
     cin.sync();
     int dir = getch();
-    cout << "Dir " << dir << endl;
-    if (dir == 0xe0 || dir == 27){
+    cout << "Dir " << dir << endl; // TODO: DEBUG
+    if (dir == 0xe0 || dir == 27){ // 27 == ESC a.k.a \ (Empieza una secuencia especial de la terminal (en Unix)
+        // 91 = [
         dir = getch();
-        cout << "Dir " << dir << endl;
+        if(dir == '[') dir = getch();
+        cout << "Dir " << dir << endl; // TODO: DEBUG
     }
 
     switch(dir){
     case 10:
     case 13: return tecla::SALIR; // Enter
-    case 65: // On linux
+    case 65: // On linux, conflict w/ 'A'
     case 72: return tecla::AVANZA;
-    case 67: // On linux
+    case 67: // On linux, conflict w/ 'C'
     case 77: return tecla::DERECHA;
-    case 68: // On linux
+    case 68: // On linux, conflict w/ 'D'
     case 75: return tecla::IZQUIERDA;
+    case 'j':
+    case 'J': return tecla::JUGAR;
+    case 'r':
+    case 'R': return tecla::ROBAR;
     case ' ': return tecla::DISPARO;
     default: return tecla::NADA;
     }
@@ -150,6 +162,11 @@ void imprimirCasilla(const tCasilla casilla){
     case CAJA: cout << "[]"; break;
     // Sé que dijo 00, pero en la terminal quedan raro
     case JOYA: cout << "00"; break;
+    case ANIMATION_LASER:
+        colorTexto(casilla.tortuga.numero);
+        if(casilla.tortuga.direccion == NORTE || casilla.tortuga.direccion == SUR) cout << "¦ ";
+        else cout << "--";
+        break;
     case TORTUGA:
         colorFondo(paleta[casilla.tortuga.numero+NUM_TIPOS_CASILLAS]);
         switch(casilla.tortuga.direccion){
@@ -161,6 +178,20 @@ void imprimirCasilla(const tCasilla casilla){
     }
 
     colorReset();
+}
+
+bool animateLaser(tJuego & juego, const tDir direccion, unsigned & x, unsigned & y, const unsigned color){
+    while(calcularDir(x,y,direccion) && juego.tablero[x][y].estado == VACIA){
+        juego.tablero[x][y].estado = ANIMATION_LASER;
+        juego.tablero[x][y].tortuga.numero = color;
+        juego.tablero[x][y].tortuga.direccion = direccion;
+
+        mostrarJuego(juego);
+        juego.tablero[x][y].estado = VACIA;
+        _sleep(LASER_DELAY);
+    }
+
+    return juego.tablero[x][y].estado != VACIA;
 }
 
 void mostrarBody(const tTablero tablero, const tLog log){
