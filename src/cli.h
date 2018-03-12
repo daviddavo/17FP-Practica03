@@ -20,7 +20,7 @@
     #include <termios.h> // Para el emulador getch
     #include <unistd.h> // tcsetattr
 
-    int getch();
+    int getch(); // Emulador de getch de conio.h
 #endif
 
 namespace tecla{
@@ -29,16 +29,18 @@ namespace tecla{
 
 typedef std::string tLog[LOG_SIZE];
 
-void mostrarJuego(const tJuego & juego);
+void mostrarJuego(const tJuego & juego); // Muestra el juego: header, body y jugadores
 void mostrarJugadores(const tJugador [MAX_JUGADORES], const unsigned, const unsigned); // DEBUGGING
-void flushLog(tLog);
-void addMsg(tLog, const std::string);
-std::string pedirFichero();
-unsigned pedirJugadores();
-void anyKey();
-tecla::tTecla leerTecla();
-void mostrarBody(const tTablero, const tLog);
-bool animateLaser(tJuego &, const tDir, unsigned &, unsigned &, const unsigned);
-void continuar(const tJuego &, const tPuntuaciones); // Pregunta si se desea seguir jugando
+void flushLog(tLog); // Borra el log (a veces es necesario)
+void addMsg(tLog, const std::string); // Añade un mensaje al log
+std::string pedirFichero(); // Pide el nombre del fichero
+unsigned pedirJugadores(); // Pide el número de jugadores
+void anyKey(); // Equivalente a system(pause)
+tecla::tTecla leerTecla(); // Lee una tecla
+void mostrarBody(const tTablero, const tLog); // Muestra el "cuerpo" del juego (mapa y log)
+bool animateLaser(tJuego &, const tDir, unsigned &, unsigned &, const unsigned); // Animación del láser en una direccion
+bool continuar(const tPuntuaciones, const bool); // Pregunta si se desea seguir jugando
+void gameOver(const tJuego &); // La pantalla al finalizar el juego
+void mainMenu(); // Menu principal del juego
 
 #endif /* SRC_CLI_H_ */

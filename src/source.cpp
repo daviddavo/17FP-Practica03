@@ -49,7 +49,7 @@ int main(){
     mostrarJugadores(jugadores, 4, 2);
     */
 
-    jugar();
+    mainMenu();
 
 	return 0;
 }

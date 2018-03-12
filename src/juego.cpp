@@ -175,7 +175,7 @@ unsigned jugadoresJugando(const tJuego & juego){
 }
 
 bool ejecutarTurno(tJuego & juego){
-    bool joya;
+    bool joya = false;
     tecla::tTecla tecla;
 
     if(manoVacia(juego.jugadores[juego.turno].mano)){
@@ -196,7 +196,7 @@ bool ejecutarTurno(tJuego & juego){
             if(accionRobar(juego)){
                 juego.log[0] += " ha robado una carta";
             }else{
-                juego.log[0] += " no le quedan cartas en el mazo, toca jugar las que tienes";
+                juego.log[0] += " no le quedan cartas en el mazo";
                 tecla = tecla::ROBAR;
             }
         }
@@ -238,10 +238,11 @@ string pedirJugador(const unsigned i){
 
 bool cargarJuego(tJuego & juego){
     // s = success
+    // TODO: juego.turno random
+    string fname = pedirFichero();
     juego.nJugadores = pedirJugadores();
-    // Leemos el tablero
-    bool s = cargarTablero(juego.tablero, pedirFichero(), juego.nJugadores);
-    // juego.turno = 0;
+    // Cargamos el tablero
+    bool s = cargarTablero(juego.tablero, fname, juego.nJugadores);
 
     if(!s){
         // Asignamos los jugadores buscando las tortugas por el tablero
@@ -269,7 +270,7 @@ bool cargarJuego(tJuego & juego){
     return s;
 }
 
-void jugar(){
+void jugar(tPuntuaciones & puntuaciones){
     tJuego juego;
     bool salir = false;
 
@@ -277,7 +278,16 @@ void jugar(){
     while(jugadoresJugando(juego) > 1 && !salir){
         cambiarTurno(juego);
         if(ejecutarTurno(juego)){
-            salir = !continuar(juego);
+            // TODO: Sii aun quedan 2 o mas jugadores
+            unsigned jugando = jugadoresJugando(juego);
+            if(jugando > 1){
+                actualizarPuntuacion(puntuaciones, juego.jugadores[juego.joya].nombre, jugando+1);
+                salir = !continuar(puntuaciones, true);
+            }else{
+                salir = true;
+            }
         }
     }
+    guardarPuntuaciones(puntuaciones);
+    gameOver(juego);
 }

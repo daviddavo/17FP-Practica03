@@ -6,16 +6,14 @@
 
 #include "config.h"
 
-const std::string FILE_PUNT = "puntuaciones.txt";
-// No es necesario usar NUM_LINEAS si usamos .eof()
-
 typedef struct {
     std::string nombre;
     unsigned puntos;
 } tPuntuacion;
-typedef tPuntuacion tPuntuaciones[MAX_JUGADORES];
+typedef tPuntuacion tPuntuaciones[MAX_PUNTUACIONES];
 
-bool operator<(const tPuntuacion &, const tPuntuacion &); // Usado internamente, pero puede ser usado fuera?
+// TODO: Hacer que puntuaciones sea una lista ordenada
+bool sorter(const tPuntuacion &, const tPuntuacion &); // Usado internamente, pero puede ser usado fuera?
 bool cargarPuntuaciones(tPuntuaciones); // Carga puntuaciones del fichero
 bool guardarPuntuaciones(const tPuntuaciones); // Guarda las puntuaciones al fichero
 void mostrarPuntuaciones(const tPuntuaciones); // Muestra las puntuaciones en pantalla

@@ -97,7 +97,7 @@ void cabecera(){
 
 void mostrarJuego(const tJuego & juego){
     clear();
-    cabecera()
+    cabecera();
     mostrarBody(juego.tablero, juego.log);
     cout << endl << "JUGADORES:" << endl;
     mostrarJugadores(juego.jugadores, juego.nJugadores, juego.turno);
@@ -122,7 +122,6 @@ int getch(){
 
 void anyKey(){
     cout << "Pulse cualquier tecla para continuar..." << endl;
-    cin.ignore();
     getch();
 }
 
@@ -218,12 +217,49 @@ void mostrarBody(const tTablero tablero, const tLog log){
     }
 }
 
-bool continuar(const tJuego & juego, const tPuntuaciones puntuaciones){
+bool continuar(const tPuntuaciones puntuaciones, const bool jugando){
     clear();
     cabecera();
     cout << endl;
     mostrarPuntuaciones(puntuaciones);
     cout << endl << endl;
-    cout << "\t\t\t Desea continuar? (y/n)";
-    // TODO:PEDIR TECLA Y RETORNAR
+    cout << "\t\t\t Pulse espacio para continuar" << endl;
+    if(jugando) cout << "\t\t Cualquier otra tecla para salir del juego" << endl;
+    return leerTecla() == tecla::DISPARO;
 }
+
+void gameOver(const tJuego &){
+    clear();
+    // TODO: Mostrar puntuaciones y hacerlo más bonito
+    cout << "Gracias por jugar" << endl;
+    anyKey();
+}
+
+void mainMenu(){
+    int response;
+    tPuntuaciones puntuaciones;
+    cargarPuntuaciones(puntuaciones);
+    clear();
+
+    do{
+        cabecera();
+        cout << endl << endl << endl;
+        cout << "\t\t 1. Jugar" << endl;
+        cout << "\t\t 2. Mostrar puntuaciones" << endl << endl;
+        cout << "\t\t 0. Salir" << endl << endl << endl;
+
+        cin >> response;
+        clear();
+        if(response == 1){
+            jugar(puntuaciones);
+            clear();
+        }else if(response == 2){
+            cin.sync();
+            while(!continuar(puntuaciones, false));
+            clear();
+        }else if(response != 0){
+            cout << "Respuesta inválida";
+        }
+    }while(response != 0);
+}
+

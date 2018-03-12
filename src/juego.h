@@ -6,6 +6,7 @@
 
 #include "mazo.h"
 #include "tablero.h"
+#include "puntuaciones.h"
 
 // Usaremos los índices segun el enum tCarta: AVANZAR = 0, GIROIZQUIERDA = 1...
 typedef unsigned tMano[NADA];
@@ -37,7 +38,7 @@ void cambiarTurno (tJuego & juego);
 bool esFinDePartida(tJuego & juego);
 void incluirCarta(tMano &mano, tCarta carta);
 bool calcularDir(unsigned &, unsigned &, const tDir);
-void jugar();
+void jugar(tPuntuaciones &);
 
 // DEBUG ONLY
 bool avanzar(tJuego &);

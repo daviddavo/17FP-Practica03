@@ -13,6 +13,7 @@
     }
 #elif __linux__
     #include <iostream>
+    // ESTAS FUNCIONES TAMBIÉN FUNCIONAN EN WINDOWS 10
 
     void colorFondo(const unsigned color){
         std::cout << "\e[" << w2l[color] << "m";

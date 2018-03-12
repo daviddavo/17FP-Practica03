@@ -1,4 +1,5 @@
-davo 200
-j2 6
-j3 6
+davo 209
 j4 8
+j2 6
+ela 6
+eva 2
