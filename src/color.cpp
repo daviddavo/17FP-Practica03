@@ -1,27 +1,58 @@
 #include "color.h"
 
-#ifdef _WIN32_
+#ifdef _WIN32
     #include <windows.h>
+
+    /* Nota sobre Windows API:
+     * la función SetConsoleTextAttribute recibe de parámetro un WORD (byte) en el cual el
+     * primer nibble es el color del texto, y el segundo el color de fondo
+     * Para establecer el color de fondo usaremos primero GetConsoleScreenBufferInfo para
+     * saber cual es el color del texto actual, y no cambiarlo, ídem para establecer el color
+     * del texto. Para eliminar los 4 bits finales (o iniciales) usaremos la máscara
+     * 00001111 o !00001111 definida como constante local de este módulo
+     */
+
+    const WORD COLOR_MASK = 0b00001111;
 
     void colorFondo(const unsigned color){
         HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
-        SetConsoleTextAttribute(handle, 15 | (color << 4));
+		CONSOLE_SCREEN_BUFFER_INFO bufferinfo;
+		// Esta función recibe como argumento un puntero, por lo que pondremos &
+        GetConsoleScreenBufferInfo(handle, &bufferinfo);
+        SetConsoleTextAttribute(handle, (bufferinfo.wAttributes & COLOR_MASK) | (color << 4));
     }
+
+	void colorTexto(const unsigned color) {
+		HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
+		CONSOLE_SCREEN_BUFFER_INFO bufferinfo;
+		GetConsoleScreenBufferInfo(handle, &bufferinfo);
+		SetConsoleTextAttribute(handle, color | (bufferinfo.wAttributes & ~COLOR_MASK));
+	}
+
+	// Alias
+	void colorReset() {
+		HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
+		SetConsoleTextAttribute(handle, COLOR_MASK);
+	}
 
     void clear(){
         system("cls");
     }
 #elif __linux__
     #include <iostream>
-    // ESTAS FUNCIONES TAMBIÉN FUNCIONAN EN WINDOWS 10
+    // ESTAS FUNCIONES TAMBIÉN FUNCIONARÍAN EN WINDOWS 10 2015
 
+    void color(const unsigned fondo = 0, const unsigned letras = 15){
+        std::cout << "\e[" << w2l[color] << ";" << (w2l[color]-10) << "m";
+    }
+    /*
     void colorFondo(const unsigned color){
         std::cout << "\e[" << w2l[color] << "m";
     }
 
     void colorTexto(const unsigned color){
         std::cout << "\e[" << (w2l[color]-10) << "m";
-    }
+    }*/
 
     // 49-> reset back, 39 -> reset fore, 0 -> reset all
     void colorReset(){

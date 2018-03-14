@@ -106,7 +106,7 @@ void mostrarJuego(const tJuego & juego){
 #ifdef __linux__
 // La siguiente función ha sido lo único obtenido de
 // https://github.com/manuel-freire/LiberarFdI/blob/master/Fundamentos%20de%20la%20Programacion/colores/colores.h
-int getch(){
+int _getch(){
    // from http://stackoverflow.com/a/23035044/15472
    struct termios oldattr, newattr;
    int ch;
@@ -122,17 +122,17 @@ int getch(){
 
 void anyKey(){
     cout << "Pulse cualquier tecla para continuar..." << endl;
-    getch();
+    _getch();
 }
 
 tecla::tTecla leerTecla(){
     cin.sync();
-    int dir = getch();
+    int dir = _getch();
     cout << "Dir " << dir << endl; // TODO: DEBUG
     if (dir == 0xe0 || dir == 27){ // 27 == ESC a.k.a \ (Empieza una secuencia especial de la terminal (en Unix)
         // 91 = [
-        dir = getch();
-        if(dir == '[') dir = getch();
+        dir = _getch();
+        if(dir == '[') dir = _getch();
         cout << "Dir " << dir << endl; // TODO: DEBUG
     }
 
@@ -167,7 +167,7 @@ void imprimirCasilla(const tCasilla casilla){
     case JOYA: cout << "00"; break;
     case ANIMATION_LASER:
         colorTexto(casilla.tortuga.numero);
-        if(casilla.tortuga.direccion == NORTE || casilla.tortuga.direccion == SUR) cout << "¦ ";
+        if(casilla.tortuga.direccion == NORTE || casilla.tortuga.direccion == SUR) cout << "| ";
         else cout << "--";
         break;
     case TORTUGA:
@@ -246,7 +246,7 @@ void mainMenu(){
         cout << endl << endl << endl;
         cout << "\t\t 1. Jugar" << endl;
         cout << "\t\t 2. Mostrar puntuaciones" << endl << endl;
-        cout << "\t\t 0. Salir" << endl << endl << endl;
+        cout << "\t\t 0. Salir" << endl << endl << endl << "\t\t";
 
         cin >> response;
         clear();

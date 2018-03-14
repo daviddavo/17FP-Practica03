@@ -7,6 +7,8 @@
 using namespace std;
 
 int main(){
+	setlocale(LC_ALL, "es-ES");
+
     /*
 	tMazo mazoPrueba;
 	crearMazoAleatorio(mazoPrueba);

@@ -45,7 +45,7 @@ bool empujar(tJuego & juego, const unsigned x, const unsigned y, const tDir dir)
 }
 
 bool avanzar(tJuego & juego){
-    bool joya;
+    bool joya = false;
     unsigned x2 = juego.jugadores[juego.turno].x;
     unsigned y2 = juego.jugadores[juego.turno].y;
     tTortuga tortuga = juego.tablero[x2][y2].tortuga;

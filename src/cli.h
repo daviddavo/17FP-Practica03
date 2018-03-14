@@ -14,7 +14,7 @@
 #include "juego.h"
 #include "puntuaciones.h"
 
-#ifdef _WIN32_
+#ifdef _WIN32
     #include <conio.h> // Para getch
 #elif __linux__
     #include <termios.h> // Para el emulador getch

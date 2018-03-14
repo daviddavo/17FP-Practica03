@@ -7,7 +7,7 @@ using namespace std;
 
 bool sorter(const tPuntuacion & p1, const tPuntuacion & p2){
     // Si el nombre está vacío, ignoramos los puntos, lo ponemos al final de la lista
-    return p1.puntos > p2.puntos || p2.nombre == "";
+    return p1.puntos > p2.puntos;
 }
 
 bool guardarPuntuaciones(const tPuntuaciones puntuaciones){
