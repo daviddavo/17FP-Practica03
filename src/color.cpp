@@ -42,17 +42,13 @@
     #include <iostream>
     // ESTAS FUNCIONES TAMBIÉN FUNCIONARÍAN EN WINDOWS 10 2015
 
-    void color(const unsigned fondo = 0, const unsigned letras = 15){
-        std::cout << "\e[" << w2l[color] << ";" << (w2l[color]-10) << "m";
-    }
-    /*
     void colorFondo(const unsigned color){
         std::cout << "\e[" << w2l[color] << "m";
     }
 
     void colorTexto(const unsigned color){
         std::cout << "\e[" << (w2l[color]-10) << "m";
-    }*/
+    }
 
     // 49-> reset back, 39 -> reset fore, 0 -> reset all
     void colorReset(){
