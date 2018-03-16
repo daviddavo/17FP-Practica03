@@ -37,6 +37,7 @@ std::string pedirFichero(); // Pide el nombre del fichero
 unsigned pedirJugadores(); // Pide el número de jugadores
 void anyKey(); // Equivalente a system(pause)
 tecla::tTecla leerTecla(); // Lee una tecla
+void mostrarTecla(tecla::tTecla);
 void mostrarBody(const tTablero, const tLog); // Muestra el "cuerpo" del juego (mapa y log)
 bool animateLaser(tJuego &, const tDir, unsigned &, unsigned &, const unsigned); // Animación del láser en una direccion
 bool continuar(const tPuntuaciones, const bool); // Pregunta si se desea seguir jugando

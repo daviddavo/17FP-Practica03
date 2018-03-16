@@ -263,3 +263,12 @@ void mainMenu(){
     }while(response != 0);
 }
 
+void mostrarTecla(tecla::tTecla tecla){
+	switch(tecla){
+	case tecla::AVANZA: cout << "^"; break;
+	case tecla::DERECHA: cout << ">"; break;
+	case tecla::IZQUIERDA: cout << "<"; break;
+	case tecla::DISPARO: cout << "-"; break;
+	default: break;
+	}
+}

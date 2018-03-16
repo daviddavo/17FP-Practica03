@@ -24,7 +24,7 @@ typedef struct{
 typedef struct{
     unsigned nJugadores; // Numero de jugadores, siempre menor que MAX_JUGADORES
     unsigned turno; // Turno actual 0 a MAX_JUGADORES-1
-    unsigned joya; // Ultimo jugador en conseguir una joya
+    unsigned joya; // Ultimo jugador en haber conseguido una joya
     tJugador jugadores[MAX_JUGADORES]; // Almacena los jugadores
     tTablero tablero; // Almacena el tablero
     std::string log[LOG_SIZE]; // Los mensajes para la interfaz

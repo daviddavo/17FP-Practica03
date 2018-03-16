@@ -38,6 +38,10 @@
     void clear(){
         system("cls");
     }
+
+    void move(const unsigned line, const unsigned col){
+    	SetCursorPos(line, col);
+    }
 #elif __linux__
     #include <iostream>
     // ESTAS FUNCIONES TAMBIÉN FUNCIONARÍAN EN WINDOWS 10 2015
@@ -57,6 +61,10 @@
 
     void clear(){
         system("clear");
+    }
+
+    void move(const unsigned line, const unsigned col){
+    	std::cout << "\e[" << line << ";" << col;
     }
 
 #endif
