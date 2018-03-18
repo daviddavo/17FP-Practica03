@@ -23,7 +23,7 @@ std::string carta2string(const tCarta);
 void crearVacia(tMazo &);
 void crearMazoOrdenado(tMazo &);
 void crearMazoAleatorio(tMazo &);
-bool sacar (tMazo &, tCarta &);
+bool sacar (tMazo, tCarta &);
 bool insertar(tMazo &, const tCarta);
 
 #endif /* SRC_MODULES_MAZO_H_ */

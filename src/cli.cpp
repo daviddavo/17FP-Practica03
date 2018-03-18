@@ -259,6 +259,16 @@ void mainMenu(){
     }while(response != 0);
 }
 
+tCarta tecla2carta(const tecla::tTecla tecla){
+    switch(tecla){
+    case tecla::AVANZA: return AVANZAR;
+    case tecla::DERECHA: return GIRODERECHA;
+    case tecla::IZQUIERDA: return GIROIZQUIERDA;
+    case tecla::DISPARO: return LASER;
+    default: return NADA;
+    }
+}
+
 void mostrarTecla(tecla::tTecla tecla){
 	switch(tecla){
 	case tecla::AVANZA: cout << "^"; break;

@@ -34,7 +34,7 @@ void crearMazoAleatorio(tMazo & mazo){
 	std::random_shuffle(mazo, mazo + NUM_CARTAS);
 }
 
-bool sacar(tMazo & mazo, tCarta & carta){
+bool sacar(tMazo mazo, tCarta & carta){
 	// Sacamos la primera
 	carta = mazo[0];
 	// Movemos todos uno a la izda

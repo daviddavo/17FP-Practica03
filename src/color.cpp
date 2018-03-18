@@ -68,8 +68,4 @@
         std::cout << "\e[" << line << ";" << col << "f";
     }
 
-    void move(const unsigned line, const unsigned col){
-    	std::cout << "\e[" << line << ";" << col;
-    }
-
 #endif

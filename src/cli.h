@@ -43,5 +43,6 @@ bool animateLaser(tJuego &, const tDir, unsigned &, unsigned &, const unsigned);
 bool continuar(const tPuntuaciones, const bool); // Pregunta si se desea seguir jugando
 void gameOver(const tJuego &); // La pantalla al finalizar el juego
 void mainMenu(); // Menu principal del juego
+tCarta tecla2carta(const tecla::tTecla);
 
 #endif /* SRC_CLI_H_ */

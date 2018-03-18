@@ -107,20 +107,29 @@ void disparo(tJuego & juego){
 }
 
 bool pedirJugada(tJuego & juego){
-	tMano copiaMano;
+    bool posible = false;
+    tMazo tmpMazo;
+    tMano tmpMano = {0};
+    crearVacia(tmpMazo);
 
-	// Pedimos la jugada
-	tecla::tTecla tecla;
-	do{
-		tecla = leerTecla();
-		mostrarTecla(tecla);
-	}while(tecla != tecla::SALIR);
+    tecla::tTecla tecla;
+    addMsg(juego.log, "Introduzca una secuencia de cartas:");
+    // Creamos una "cola" de las cartas que se han ido jugando
+    do{
+        tCarta carta;
+        tecla = leerTecla();
+        carta = tecla2carta(tecla);
+        if(carta != NADA){
+            insertar(tmpMazo, carta);
+            tmpMano[carta]++;
+        }
+    }while(tecla != tecla::SALIR);
 
-	// Comprobamos si es posible realizar la secuencia de cartas
-	bool posible = true;
-	for(unsigned i = 0; i < NADA && posible; i++){
-		posible = copiaMano[i] <= juego.jugadores[juego.turno].mano[i];
-	}
+    // Miramos si las cartas estan en la mano
+    posible = juego.jugadores[juego.turno].mano >= tmpMano;
+    if(posible){
+        accionSecuencia(juego, tmpMazo);
+    }
 
 	return posible;
 }
@@ -132,6 +141,23 @@ bool accionRobar(tJuego & juego){
         incluirCarta(juego.jugadores[juego.turno].mano, carta);
     }
     return success;
+}
+
+// FUNCION INTERNA
+bool mayorIgual(const tMano m1, const tMano m2){
+    bool bgt = true;
+    for(unsigned i = 0; i < NADA && bgt; i++){
+        bgt = m1[i] >= m2[i];
+    }
+    return bgt;
+}
+
+void accionSecuencia(tJuego & juego, tMazo tmpMazo){
+    // Primero pedimos la secuencia
+    tCarta carta;
+    while(sacar(tmpMazo, carta)){
+
+    }
 }
 
 bool manoVacia(const tMano mano){

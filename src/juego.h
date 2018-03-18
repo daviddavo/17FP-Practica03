@@ -43,4 +43,4 @@ void jugar(tPuntuaciones &);
 // DEBUG ONLY
 bool avanzar(tJuego &);
 
-#endif /* SRC_JUEGO_H_ */
+#endif /* SRC_JUEGO_H_*/
