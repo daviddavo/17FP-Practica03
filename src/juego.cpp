@@ -106,46 +106,23 @@ void disparo(tJuego & juego){
     }
 }
 
-bool accionSecuencia(tJuego & juego, tMano & cartas){
-    bool joya = false;
-    tJugador jugador = juego.jugadores[juego.turno];
-    tecla::tTecla tecla = tecla::NADA;
-    // cin.ignore();
+bool pedirJugada(tJuego & juego){
+	tMano copiaMano;
 
-    while(!joya && tecla != tecla::SALIR){
-        tCarta carta = NADA;
-        tecla = leerTecla();
-        cout << tecla << endl; // TODO: DEBUG
-        switch(tecla){
-        case tecla::AVANZA:
-            if(cartas[AVANZAR] > 0){carta = AVANZAR; joya = avanzar(juego);}
-            else addMsg(juego.log, "No te quedan cartas de avanzar ( ^ )");
-            break;
-        case tecla::DERECHA:
-            if(cartas[GIRODERECHA] > 0){carta = GIRODERECHA; gira(juego, 1);}
-            else addMsg(juego.log, "No te quedan cartas de girar a la derecha ( > )");
-            break;
-        case tecla::IZQUIERDA:
-            if(cartas[GIROIZQUIERDA]){carta = GIROIZQUIERDA; gira(juego, 0);}
-            else addMsg(juego.log, "No te quedan cartas de girar a la izquierda ( < )");
-            break;
-        case tecla::DISPARO:
-            if(cartas[LASER]){carta = LASER; disparo(juego);}
-            else addMsg(juego.log, "No te quedan cartas de disparo ( ~ )");
-            break;
-        default: break;
-        }
-        if(carta != NADA){
-            cartas[carta]--;
-            insertar(jugador.mazo, carta);
-        }
-        mostrarJuego(juego);
-    }
+	// Pedimos la jugada
+	tecla::tTecla tecla;
+	do{
+		tecla = leerTecla();
+		mostrarTecla(tecla);
+	}while(tecla != tecla::SALIR);
 
-    // mostrarJuego(juego);
+	// Comprobamos si es posible realizar la secuencia de cartas
+	bool posible = true;
+	for(unsigned i = 0; i < NADA && posible; i++){
+		posible = copiaMano[i] <= juego.jugadores[juego.turno].mano[i];
+	}
 
-
-    return joya;
+	return posible;
 }
 
 bool accionRobar(tJuego & juego){
