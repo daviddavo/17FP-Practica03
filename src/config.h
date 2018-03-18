@@ -22,6 +22,7 @@ const unsigned LASER_DELAY = 200; // Tiempo que tarda el laser en pasar de casil
 // Usando http://en.cppreference.com/w/cpp/language/string_literal
 // ASCII ART de http://patorjk.com/software/taag/#p=testall&f=Graffiti&t=ROBOT%20TURTLES
 // Nota: La terminal de Win2 por defecto solo caben 80 caracteres, así que cuidadín
+const unsigned CABECERA_HEIGHT = 9;
 const std::string CABECERA = R"HEAD(
  ____   ___  ____   ___  ______      ______ __ __ ____  ______ _       ___ _____
 |    \ /   \|    \ /   \|      |    |      |  |  |    \|      | |     /  _] ___/

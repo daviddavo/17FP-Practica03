@@ -101,6 +101,8 @@ void mostrarJuego(const tJuego & juego){
     mostrarBody(juego.tablero, juego.log);
     cout << endl << "JUGADORES:" << endl;
     mostrarJugadores(juego.jugadores, juego.nJugadores, juego.turno);
+    // Y ahora movemos el cursor
+    move(CABECERA_HEIGHT + 1, MAX_FILAS*2 + 5 + juego.log[0].length());
 }
 
 #ifdef __linux__
@@ -128,12 +130,10 @@ void anyKey(){
 tecla::tTecla leerTecla(){
     cin.sync();
     int dir = _getch();
-    cout << "Dir " << dir << endl; // TODO: DEBUG
     if (dir == 0xe0 || dir == 27){ // 27 == ESC a.k.a \ (Empieza una secuencia especial de la terminal (en Unix)
         // 91 = [
         dir = _getch();
         if(dir == '[') dir = _getch();
-        cout << "Dir " << dir << endl; // TODO: DEBUG
     }
 
     switch(dir){
@@ -145,10 +145,6 @@ tecla::tTecla leerTecla(){
     case 77: return tecla::DERECHA;
     case 68: // On linux, conflict w/ 'D'
     case 75: return tecla::IZQUIERDA;
-    case 'j':
-    case 'J': return tecla::JUGAR;
-    case 'r':
-    case 'R': return tecla::ROBAR;
     case ' ': return tecla::DISPARO;
     default: return tecla::NADA;
     }

@@ -24,7 +24,7 @@
 #endif
 
 namespace tecla{
-    typedef enum {AVANZA, DERECHA, IZQUIERDA, DISPARO, NADA, SALIR, ROBAR, JUGAR} tTecla;
+    typedef enum {AVANZA, DERECHA, IZQUIERDA, DISPARO, NADA, SALIR} tTecla;
 }
 
 typedef std::string tLog[LOG_SIZE];

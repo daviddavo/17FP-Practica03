@@ -176,7 +176,7 @@ unsigned jugadoresJugando(const tJuego & juego){
 
 bool ejecutarTurno(tJuego & juego){
     bool joya = false;
-    tecla::tTecla tecla;
+    string robjug; char c;
 
     if(manoVacia(juego.jugadores[juego.turno].mano)){
         addMsg(juego.log, juego.jugadores[juego.turno].nombre + " no tienes cartas, tienes que robar");
@@ -188,19 +188,21 @@ bool ejecutarTurno(tJuego & juego){
         // cin.ignore();
 
         do{
-            tecla = leerTecla();
-        }while(tecla != tecla::ROBAR && tecla != tecla::JUGAR);
+            cin >> robjug;
+            c = tolower(robjug[0]);
+            cin.ignore(); // Si no leertecla no funcionará posteriormente
+        }while(c != 'r' && c != 'j');
 
         juego.log[0] = juego.jugadores[juego.turno].nombre;
-        if(tecla == tecla::ROBAR){
+        if(c == 'r'){
             if(accionRobar(juego)){
                 juego.log[0] += " ha robado una carta";
             }else{
                 juego.log[0] += " no le quedan cartas en el mazo";
-                tecla = tecla::ROBAR;
+                c = 'j';
             }
         }
-        if(tecla != tecla::ROBAR){
+        if(c == 'j'){
             juego.log[0] += " juega su turno";
             mostrarJuego(juego);
             joya = accionSecuencia(juego, juego.jugadores[juego.turno].mano);

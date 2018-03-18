@@ -39,7 +39,7 @@ int main(){
     guardarPuntuaciones(puntuaciones);
     */
 
-    /*
+	/*
     tJugador jugadores[4];
     for(unsigned i = 1; i < 4+1; i++){
         jugadores[i-1].id = i;
@@ -48,7 +48,9 @@ int main(){
     jugadores[1].nombre = "Pedro";
     jugadores[2].nombre = "Maria";
     jugadores[3].nombre = "Timmy";
+    clear();
     mostrarJugadores(jugadores, 4, 2);
+    anyKey();
     */
 
     mainMenu();

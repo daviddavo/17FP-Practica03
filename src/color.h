@@ -29,5 +29,6 @@ void colorFondo(const unsigned);
 void colorTexto(const unsigned);
 void colorReset();
 void clear();
+void move(const unsigned, const unsigned);
 
 #endif /* SRC_COLOR_H_ */

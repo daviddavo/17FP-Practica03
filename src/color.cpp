@@ -57,6 +57,11 @@
 
     void clear(){
         system("clear");
+        move(0, 0);
+    }
+
+    void move(const unsigned line, const unsigned col){
+        std::cout << "\e[" << line << ";" << col << "f";
     }
 
 #endif
