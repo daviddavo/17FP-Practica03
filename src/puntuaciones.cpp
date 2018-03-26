@@ -24,7 +24,7 @@ bool cargarPuntuaciones(tPuntuaciones & puntuaciones){
     for(unsigned i = 0; i < MAX_PUNTUACIONES; i++){
         tPuntuacion puntuacion;
         if(file >> puntuacion.nombre >> puntuacion.puntos)
-            puntuaciones[puntuaciones.cnt++] = puntuacion;
+            puntuaciones.puntuaciones[puntuaciones.cnt++] = puntuacion;
     }
 
     std::sort(puntuaciones.puntuaciones, puntuaciones.puntuaciones + puntuaciones.cnt, sorter);

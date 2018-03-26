@@ -2,7 +2,7 @@
 #include <time.h>
 #include <iostream>
 // LIBRERIAS DE PRUEBAS
-#include "tablero.h"
+#include "interface.h"
 
 // ACUERDATE DE BORRAR ESTO: SE SUPONE QUE NO HEMOS DADO TEMPLATES
 template <typename T, size_t N> void printArray(const T (&array)[N]){
@@ -24,8 +24,10 @@ int main(){
     */
 
     // TEST TABLERO
-    tTablero tablero;
-    bool fail = cargarTablero(tablero, "tableros.txt", 3);
+    /* tTablero tablero;
+     * bool fail = cargarTablero(tablero, "tableros.txt", 3);
+     */
+    mainMenu();
 
     return 0;
 }

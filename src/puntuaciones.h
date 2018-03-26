@@ -12,6 +12,7 @@
 #include <string>
 #include <fstream>
 #include <algorithm>
+#include <iomanip>
 
 typedef struct {
     std::string nombre;
@@ -25,7 +26,7 @@ typedef struct {
 // Nota: Puntuaciones es una lista ordenada, para hacerlo más bonito
 bool cargarPuntuaciones(tPuntuaciones &); // Carga puntuaciones del fichero
 bool guardarPuntuaciones(const tPuntuaciones &); // Guarda las puntuaciones al fichero
-bool mostrarPuntuaciones(const tPuntuaciones &); // Muestra las puntuaciones en pantalla
+// Nota: mostrarPuntuaciones ha sido movido al modulo interface.cpp
 bool actualizarPuntuacion(tPuntuaciones &, const std::string, const unsigned); // Actualiza el struct
 
 #endif /* SRC_PUNTUACIONES_H_ */
