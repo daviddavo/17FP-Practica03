@@ -1,5 +1,6 @@
 davo 209
+a 10
 j4 8
 j2 6
-ela 6
-eva 2
+b 4
+c 3

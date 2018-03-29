@@ -9,12 +9,12 @@ constexpr unsigned MAX_JUGADORES = 4;
 constexpr unsigned NUM_TIPOS_CASILLAS = 7;  // Numero de tEstados distintos
 
 /* PUNTUACIONES */
-constexpr unsigned MAX_PUNTUACIONES = MAX_JUGADORES;
+constexpr unsigned MAX_PUNTUACIONES = 8;  // Almacenamos 8 puntuaciones o.o
 const char FILE_PUNTUACIONES[] = "puntuaciones.txt";
 
 /* INTERFAZ */
-const unsigned paleta[NUM_TIPOS_CASILLAS + MAX_JUGADORES] = {
-    1, 11, 7, 4, 12, 5, 1, 13, 9, 10, 3};
+const bool MENU_GETCH = true;  // Si quieres que los menus vayan con getch o con entrada cin
+const unsigned paleta[NUM_TIPOS_CASILLAS + MAX_JUGADORES] = {1, 11, 7, 4, 12, 5, 1, 13, 9, 10, 3};
 const unsigned COLOR_TEXTO = 15;    // Blanco
 const unsigned COLOR_CABECERA = 2;  // Verde
 const unsigned COLOR_MANO = 1;      // Azul
@@ -22,14 +22,14 @@ const unsigned COLOR_MANO = 1;      // Azul
 const unsigned LOG_SIZE = 10;  // Numero de mensajes que almacenar
 
 const unsigned MOVE_DELAY = 400;  // Tiempo en ms que dura cada "fotograma" de los movimientos
-const unsigned LASER_DELAY = 200;  // Tiempo que tardará cada fotograma del laser
-// de la animación de movimiento
+const unsigned LASER_DELAY = 200;  // Tiempo que tardara cada fotograma del laser
+// de la animacion de movimiento
 
 // Usando http://en.cppreference.com/w/cpp/language/string_literal
 // ASCII ART de
 // http://patorjk.com/software/taag/#p=testall&f=Graffiti&t=ROBOT%20TURTLES
-// Nota: La terminal de Win2 por defecto solo caben 80 caracteres, así que
-// cuidadín
+// Nota: La terminal de Win2 por defecto solo caben 80 caracteres, asi que
+// cuidadin
 const unsigned CABECERA_LINEAS = 9;
 const char CABECERA[] =
     R"HEAD( ____   ___  ____   ___  ______      ______ __ __ ____  ______ _       ___ _____
@@ -39,7 +39,7 @@ const char CABECERA[] =
 |    \|     |  O  |     | |  |        |  | |  :  |    \  |  | |     |   [_/  \ |
 |  .  \     |     |     | |  |        |  | |     |  .  \ |  | |     |     \    |
 |__|\_|\___/|_____|\___/  |__|        |__|  \__,_|__|\_| |__| |_____|_____|\___|
- David Davó & Victor Martínez
+ David Davo & Victor Martinez
 
 )HEAD";
 

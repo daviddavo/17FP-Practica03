@@ -2,7 +2,7 @@
 
 // Funcion interna para sort()
 bool sorter(const tPuntuacion &p1, const tPuntuacion &p2) {
-  // TODO: Si el nombre está vacio, poner al final de la lista
+  // TODO: Si el nombre esta vacio, poner al final de la lista
   return p1.puntos > p2.puntos;
 }
 
@@ -46,7 +46,7 @@ bool actualizarPuntuacion(tPuntuaciones &puntuaciones, const std::string nombre,
   // No lo encontramos, lo añadimos
   if (!f) {
     // Al ser una lista ordenada de mayor a menor, en caso de estar llena
-    // La posición MAX -1 será la de menor puntuación
+    // La posicion MAX -1 sera la de menor puntuacion
     unsigned pos;
     if (puntuaciones.cnt == MAX_PUNTUACIONES) {
       pos = MAX_PUNTUACIONES - 1;
@@ -58,8 +58,8 @@ bool actualizarPuntuacion(tPuntuaciones &puntuaciones, const std::string nombre,
     puntuaciones.puntuaciones[pos].puntos = add;
   }
 
-  // Al ser una lista tan pequeña es más fácil ordenarla que crear un método
-  // "actualizar" Y un método insertar
+  // Al ser una lista tan pequeña es mas facil ordenarla que crear un metodo
+  // "actualizar" Y un metodo insertar
   std::sort(puntuaciones.puntuaciones,
             puntuaciones.puntuaciones + puntuaciones.cnt, sorter);
   return f;

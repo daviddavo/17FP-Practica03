@@ -11,9 +11,9 @@ namespace carta {
 typedef enum { AVANZAR, IZQUIERDA, DERECHA, LASER, NADA } tCarta;
 }  // namespace carta
 // De esta manera, si queremos modificar el numero de cartas en el mazo, es
-// mucho más fácil
+// mucho mas facil
 constexpr unsigned nCartas[carta::NADA]{18, 8, 8, 4};
-// Tenemos una función sum() que calcula en tiempo de compilación el NUM_CARTAS
+// Tenemos una funcion sum() que calcula en tiempo de compilacion el NUM_CARTAS
 constexpr unsigned sum(const unsigned arr[], const unsigned size) {
   unsigned sum = 0;
   for (unsigned i = 0; i < size; i++) sum += arr[i];

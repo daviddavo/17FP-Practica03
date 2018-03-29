@@ -23,7 +23,7 @@ typedef struct {
   unsigned cnt;
 } tPuntuaciones;
 
-// Nota: Puntuaciones es una lista ordenada, para hacerlo más bonito
+// Nota: Puntuaciones es una lista ordenada, para hacerlo mas bonito
 bool cargarPuntuaciones(tPuntuaciones &);  // Carga puntuaciones del fichero
 bool guardarPuntuaciones(const tPuntuaciones &);  // Guarda las puntuaciones al fichero
 // Nota: mostrarPuntuaciones ha sido movido al modulo interface.cpp

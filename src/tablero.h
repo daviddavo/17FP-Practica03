@@ -24,7 +24,7 @@ typedef enum {
   ANIMATION_LASER
 } tEstadoCasilla;
 typedef struct {
-  // tTortuga también es usado para laser, siendo numero la
+  // tTortuga tambien es usado para laser, siendo numero la
   // tortuga que lo ha lanzado y tDir la direccion del laser
   unsigned numero;
   tDir direccion;
@@ -36,6 +36,7 @@ typedef struct {
 } tCasilla;
 
 typedef tCasilla tTablero[MAX_FILAS][MAX_FILAS];
+bool validfName(const std::string);  // Retorna si es un nombre de fichero valido
 bool cargarTablero(tTablero, const std::string, const unsigned);
 
 #endif  // SRC_TABLERO_H_

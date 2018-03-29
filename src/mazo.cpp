@@ -5,7 +5,7 @@ void crearVacia(tMazo& mazo) { mazo.cnt = 0; }
 void crearMazoOrdenado(tMazo& mazo) {
   // Primero rellenamos el array. Recorremos las distintas cartas que existen
   // vemos cuantas cartas de ese tipo hay en nCartas y las metemos
-  // Sé que es un método un tanto raro, pero me parece mejor y más escalable
+  // Se que es un metodo un tanto raro, pero me parece mejor y mas escalable
   // que hacer N for's
   crearVacia(mazo);
   unsigned j = 0;  // Posicion de la carta en el array
@@ -24,7 +24,7 @@ void crearMazoAleatorio(tMazo& mazo) {
 }
 
 bool sacar(tMazo& mazo, carta::tCarta & carta) {
-  // Como me cabrea el .mazo[], si esto fuese una clase podría redefinir el
+  // Como me cabrea el .mazo[], si esto fuese una clase podria redefinir el
   // operador
   bool posible = mazo.cnt > 0;
 
