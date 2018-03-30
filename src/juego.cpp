@@ -67,7 +67,7 @@ bool empujar(tJuego & juego, const int x, const int y, const tDir dir) {
     int x2 = x, y2 = y;
     bool posible = calcularPos(x2, y2, dir) && juego.tablero[x2][y2].estado == VACIA;
     if (posible) {
-        // TODO: ¿Se pueden empujar dos cajas seguidas?
+        // Nota: No se pueden empujar dos cajas seguidas
         juego.tablero[x2][y2] = juego.tablero[x][y];
         juego.tablero[x][y].estado = VACIA;
         avanzar(juego);
@@ -162,6 +162,17 @@ bool disparar(tJuego & juego) {
         juego.tablero[x][y].estado = VACIA;
         addMsg(juego.log, juego.jugadores[juego.turno].nombre + " ha destruido " + std::to_string(x) + ", " +
                 std::to_string(y));
+    } else if (juego.tablero[x][y].estado == JOYA) {  // Ahora "rebota"
+    	int tx = juego.jugadores[juego.turno].x , ty = juego.jugadores[juego.turno].y;
+    	int sx = juego.jugadores[juego.turno].sx, sy = juego.jugadores[juego.turno].sy;
+    	if (juego.tablero[sx][sy].estado == VACIA) {
+			juego.tablero[sx][sy].estado = TORTUGA;
+			juego.tablero[sx][sy].tortuga = juego.tablero[tx][ty].tortuga;
+			juego.tablero[tx][ty].estado = VACIA;
+			juego.jugadores[juego.turno].x = sx;
+			juego.jugadores[juego.turno].y = sy;
+			addMsg(juego.log, juego.jugadores[juego.turno].nombre + " ha disparado, ha rebotado, y ha vuelto al inicio");
+    	}
     } else {
         addMsg(juego.log, juego.jugadores[juego.turno].nombre + " ha disparado, pero ha fallado");
     }

@@ -76,7 +76,7 @@ void anyKey(std::string texto = "Pulse cualquier tecla para continuar...") {
   if (_getch() == 0xe0) _getch();  // Por si se cuela una tecla especial
 }
 
-void sleep(int ms) {
+void __sleep(int ms) { // Si la llamo sleep entra en conflicto
     // Usando time.h (libreria de C)
     // Como time_t funciona con segundos, vamos a usar clock_t
     clock_t fin = clock() + ms * CLOCKS_PER_SEC / 1000;
@@ -328,7 +328,12 @@ void animateLaser(tJuego & juego, const tDir dir, const int sourcex, const int s
 
         mostrarJuego(juego);
         juego.tablero[x][y].estado = VACIA;
-        sleep(LASER_DELAY);
+        __sleep(LASER_DELAY);
+    }
+    // Ahora a hacer que rebote
+    if(juego.tablero[x][y].estado == JOYA){
+    	tDir inverso = static_cast<tDir>( (dir+2)%4 );  // Norte <-> Sur, Este <-> Oeste
+    	animateLaser(juego, inverso,x, y, color);
     }
 }
 
@@ -343,6 +348,7 @@ bool ejecutarSecuencia(tJuego & juego, tMazo & secuencia) {
         case carta::DERECHA: girar(juego, 1); break;
         case carta::IZQUIERDA: girar(juego, 0); break;
         case carta::LASER:
+        {
             // TODO: HAcer que el laser haga algo
             int x = juego.jugadores[juego.turno].x, y = juego.jugadores[juego.turno].y;
             unsigned color = paleta[juego.turno + NUM_TIPOS_CASILLAS];
@@ -350,8 +356,11 @@ bool ejecutarSecuencia(tJuego & juego, tMazo & secuencia) {
             disparar(juego);
             break;
         }
+        case carta::NADA:
+        	cout << "Error?" << endl;
+        }
         // TODO: Sleep
-        sleep(MOVE_DELAY);
+        __sleep(MOVE_DELAY);
         mostrarJuego(juego);
     }
 
