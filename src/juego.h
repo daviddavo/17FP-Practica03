@@ -49,6 +49,8 @@ void cambiarTurno(tJuego &);  // Avanza un turno
 bool cargarJuego(tJuego &, const std::string, const int, const std::string[]);  // Carga el Juego
 bool accionRobar(tJuego &);  // Hace la accion de robar una carta para el jugador del turno actual
 
+bool moverTortuga(tJuego &, const int, const int, const tTortuga &);  // Mueve la tortuga a unas coordenadas
+
 void addMsg(std::string[LOG_SIZE], std::string);
 
 // AHORA LAS ACCIONES DEL TABLERO

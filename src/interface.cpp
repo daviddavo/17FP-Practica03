@@ -76,7 +76,7 @@ void anyKey(std::string texto = "Pulse cualquier tecla para continuar...") {
   if (_getch() == 0xe0) _getch();  // Por si se cuela una tecla especial
 }
 
-void __sleep(int ms) { // Si la llamo sleep entra en conflicto
+void __sleep(int ms) {  // Si la llamo sleep entra en conflicto
     // Usando time.h (libreria de C)
     // Como time_t funciona con segundos, vamos a usar clock_t
     clock_t fin = clock() + ms * CLOCKS_PER_SEC / 1000;
@@ -331,9 +331,17 @@ void animateLaser(tJuego & juego, const tDir dir, const int sourcex, const int s
         __sleep(LASER_DELAY);
     }
     // Ahora a hacer que rebote
-    if(juego.tablero[x][y].estado == JOYA){
-    	tDir inverso = static_cast<tDir>( (dir+2)%4 );  // Norte <-> Sur, Este <-> Oeste
-    	animateLaser(juego, inverso,x, y, color);
+    if (juego.tablero[x][y].estado == JOYA) {
+        tDir inverso = static_cast<tDir>((dir+2)%4);  // Norte <-> Sur, Este <-> Oeste
+        animateLaser(juego, inverso, x, y, color);
+    } else if (juego.tablero[x][y].estado == TORTUGA) {
+        // Hacemos "dos veces" el calculo del movimiento, sacrificando unos pocos recursos para poder mantener
+        // la interfaz independiente de los calculos del juego
+        tTortuga & tortuga = juego.tablero[x][y].tortuga;
+        while ( calcularPos(x, y, dir) && moverTortuga(juego, x, y, tortuga) ) {
+            mostrarJuego(juego);
+            __sleep(MOVE_DELAY);
+        }
     }
 }
 
@@ -357,7 +365,7 @@ bool ejecutarSecuencia(tJuego & juego, tMazo & secuencia) {
             break;
         }
         case carta::NADA:
-        	cout << "Error?" << endl;
+            cout << "Error?" << endl;
         }
         // TODO: Sleep
         __sleep(MOVE_DELAY);
@@ -388,7 +396,6 @@ bool ejecutarTurno(tJuego & juego) {
         }
     } while (c != 'r' && c != 'e');
 
-    // TODO: NO QUEDAN CARTAS EN EL MAZO
     juego.log[0] = juego.jugadores[juego.turno].nombre;
     if (manoVacia(juego.jugadores[juego.turno].mano)) {
         juego.log[0] += " no tienes cartas, tienes que robar";
@@ -423,6 +430,8 @@ void ejecutarPartida(tJuego &juego, tPuntuaciones &puntuaciones) {
     cambiarTurno(juego);
     if (ejecutarTurno(juego)) {
       actualizarPuntuacion(puntuaciones, juego.jugadores[juego.joya].nombre, jugadoresJugando);
+      addMsg(juego.log, juego.jugadores[juego.joya].nombre + " ha ganado con " + std::to_string(jugadoresJugando) +
+              "puntos");
       salir = !continuar(puntuaciones);
       jugadoresJugando--;
     }

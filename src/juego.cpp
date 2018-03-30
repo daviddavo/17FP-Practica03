@@ -70,10 +70,23 @@ bool empujar(tJuego & juego, const int x, const int y, const tDir dir) {
         // Nota: No se pueden empujar dos cajas seguidas
         juego.tablero[x2][y2] = juego.tablero[x][y];
         juego.tablero[x][y].estado = VACIA;
-        avanzar(juego);
     }
 
     return posible;
+}
+
+bool moverTortuga(tJuego & juego, const int x, const int y, const tTortuga & tortuga) {
+    bool vacia = juego.tablero[x][y].estado == VACIA;
+    if (vacia) {  // Solo puedes mover la tortuga a una casilla vacía
+        tJugador & jugador = juego.jugadores[tortuga.numero];
+        juego.tablero[jugador.x][jugador.y].estado = VACIA;
+        juego.tablero[x][y].estado = TORTUGA;
+        juego.tablero[x][y].tortuga = tortuga;
+        jugador.x = x;
+        jugador.y = y;
+    }
+
+    return vacia;
 }
 
 bool calcularPos(int & x, int & y, const tDir dir) {
@@ -119,23 +132,20 @@ bool avanzar(tJuego & juego) {
         case HIELO:
         case MURO: addMsg(juego.log, "No puedes avanzar a esta casilla, hay un muro"); break;
         case TORTUGA: addMsg(juego.log, "No puedes ponerte encima de una tortuga"); break;
-        case CAJA:
-            if (!empujar(juego, tmpx, tmpy, tortuga.direccion))
-                addMsg(juego.log, "No puedes empujar la caja");
-            break;
         case JOYA:
             joya = true;
             juego.joya = juego.turno;
             juego.jugadores[juego.turno].jugando = false;
+            juego.tablero[tmpx][tmpy].estado = VACIA;  // Si no, "empujará" la joya
+            /* no break */
+        case CAJA:
+            if (!empujar(juego, tmpx, tmpy, tortuga.direccion))
+                addMsg(juego.log, "No puedes empujar la caja");
             /* no break */
         default:
             addMsg(juego.log, juego.jugadores[juego.turno].nombre + " se ha movido a " + std::to_string(tmpx) + ", " +
                     std::to_string(tmpy));
-            juego.tablero[tmpx][tmpy].estado = TORTUGA;
-            juego.tablero[tmpx][tmpy].tortuga = tortuga;
-            juego.tablero[juego.jugadores[juego.turno].x][juego.jugadores[juego.turno].y].estado = VACIA;
-            juego.jugadores[juego.turno].x = tmpx;
-            juego.jugadores[juego.turno].y = tmpy;
+            moverTortuga(juego, tmpx, tmpy, tortuga);
             break;
         }
     }
@@ -156,25 +166,32 @@ void girar(tJuego & juego, const bool derecha) {
 bool disparar(tJuego & juego) {
     int x = juego.jugadores[juego.turno].x, y = juego.jugadores[juego.turno].y;
     tDir dir = juego.tablero[x][y].tortuga.direccion;
+    tJugador & jugador = juego.jugadores[juego.turno];
     // Calculamos hasta donde va el laser
     while (calcularPos(x, y, dir) && juego.tablero[x][y].estado == VACIA) {}
-    if (juego.tablero[x][y].estado == HIELO) {
+    switch (juego.tablero[x][y].estado) {
+    case HIELO:
         juego.tablero[x][y].estado = VACIA;
-        addMsg(juego.log, juego.jugadores[juego.turno].nombre + " ha destruido " + std::to_string(x) + ", " +
+        addMsg(juego.log, jugador.nombre + " ha destruido " + std::to_string(x) + ", " +
                 std::to_string(y));
-    } else if (juego.tablero[x][y].estado == JOYA) {  // Ahora "rebota"
-    	int tx = juego.jugadores[juego.turno].x , ty = juego.jugadores[juego.turno].y;
-    	int sx = juego.jugadores[juego.turno].sx, sy = juego.jugadores[juego.turno].sy;
-    	if (juego.tablero[sx][sy].estado == VACIA) {
-			juego.tablero[sx][sy].estado = TORTUGA;
-			juego.tablero[sx][sy].tortuga = juego.tablero[tx][ty].tortuga;
-			juego.tablero[tx][ty].estado = VACIA;
-			juego.jugadores[juego.turno].x = sx;
-			juego.jugadores[juego.turno].y = sy;
-			addMsg(juego.log, juego.jugadores[juego.turno].nombre + " ha disparado, ha rebotado, y ha vuelto al inicio");
-    	}
-    } else {
-        addMsg(juego.log, juego.jugadores[juego.turno].nombre + " ha disparado, pero ha fallado");
+        break;
+    case JOYA:  // Ahora es cuando "rebota"
+        // Movemos la tortuga a sx, sy, si es posible
+        if (moverTortuga(juego, jugador.sx, jugador.sy, juego.tablero[jugador.x][jugador.y].tortuga))
+            addMsg(juego.log, jugador.nombre + " ha disparado, ha rebotado, y ha vuelto al inicio");
+        break;
+    case TORTUGA:
+    {
+        tTortuga & tortugaDisparada = juego.tablero[x][y].tortuga;
+        addMsg(juego.log, jugador.nombre + " ha disparado a " + juego.jugadores[tortugaDisparada.numero].nombre);
+        // Las siguientes dos lineas no son realmente necesarias debido a animateLaser(), que modifica
+        // directamente el tablero de juego
+        while (calcularPos(x, y, dir) && juego.tablero[x][y].estado == VACIA ) {}
+        moverTortuga(juego, x, y, tortugaDisparada);
+        break;
+    }
+    default:
+        addMsg(juego.log, juego.jugadores[juego.turno].nombre + " ha disparado, pero ha fallado"); break;
     }
 
     // TODO: Hacer la parte opcional de la practica
