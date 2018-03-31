@@ -24,7 +24,7 @@ void mostrarCasilla(const tCasilla &);  // Imprime la casilla
 void mostrarJugador(const tJugador &, const unsigned, const bool);  // Imprime la linea del jugador
 void mostrarJugadores(const tJugador[MAX_JUGADORES], const unsigned, const int);  // Muestra todos los jugadores
 void mostrarCuerpo(const tTablero, const string[LOG_SIZE]);  // Muestra el mapa y los mensajes
-void animateLaser(tJuego &, const tDir, const int, const int, const unsigned);  // Animacion del movimiento del laser
+void animateLaser(tJuego &, const tDir, const tCoord &, const unsigned);  // Animacion del movimiento del laser
 
 bool ejecutarSecuencia(tJuego &, tMazo &);  // Ejecuta una secuencia recibida en forma de mazo
 bool ejecutarTurno(tJuego &);    // Se encarga de procesar un turno
@@ -91,6 +91,7 @@ carta::tCarta tecla2carta(tecla::tTecla tecla) {
     case tecla::DERECHA: return carta::DERECHA;
     case tecla::DISPARO: return carta::LASER;
     case tecla::IZQUIERDA: return carta::IZQUIERDA;
+    case tecla::BICHO: return carta::BICHO;
     default: return carta::NADA;
     }
 }
@@ -201,6 +202,8 @@ tecla::tTecla leerTecla() {
       return tecla::IZQUIERDA;
     case 32:
       return tecla::DISPARO;
+    case 'b':
+        return tecla::BICHO;
     default:
       return tecla::NADA;
   }
@@ -243,10 +246,9 @@ void mostrarCabecera() {
 
 void mostrarCasilla(const tCasilla & casilla) {
     // Ponemos como color de fondo el de la paleta
-    // Recuerda hacer siempre colorReset al terminar de pintar una linea
-    if (casilla.estado != TORTUGA) colorFondo(paleta[casilla.estado]);
+    if (casilla.estado == TORTUGA) colorFondo(paleta[casilla.tortuga.numero+NUM_TIPOS_CASILLAS]);
     else
-        colorFondo(paleta[casilla.tortuga.numero+NUM_TIPOS_CASILLAS]);
+        colorFondo(paleta[casilla.estado]);
 
     switch (casilla.estado) {
     case VACIA: cout << "  "; break;
@@ -319,26 +321,26 @@ void mostrarJuego(const tJuego & juego) {
     move(CABECERA_LINEAS + 1, MAX_FILAS*2 + 5 + juego.log[0].length());
 }
 
-void animateLaser(tJuego & juego, const tDir dir, const int sourcex, const int sourcey, const unsigned color) {
-    int x = sourcex, y = sourcey;
-    while (calcularPos(x, y, dir) && juego.tablero[x][y].estado == VACIA) {
-        juego.tablero[x][y].estado = ANIMATION_LASER;
-        juego.tablero[x][y].tortuga.numero = color;
-        juego.tablero[x][y].tortuga.direccion = dir;
+void animateLaser(tJuego & juego, const tDir dir, const tCoord & source, const unsigned color) {
+    tCoord coord = source;  // "Copiamos" para realizar las operaciones
+    while (calcularPos(coord, dir) && juego.tablero[coord.x][coord.y].estado == VACIA) {
+        juego.tablero[coord.x][coord.y].estado = ANIMATION_LASER;
+        juego.tablero[coord.x][coord.y].tortuga.numero = color;
+        juego.tablero[coord.x][coord.y].tortuga.direccion = dir;
 
         mostrarJuego(juego);
-        juego.tablero[x][y].estado = VACIA;
+        juego.tablero[coord.x][coord.y].estado = VACIA;
         __sleep(LASER_DELAY);
     }
     // Ahora a hacer que rebote
-    if (juego.tablero[x][y].estado == JOYA) {
+    if (juego.tablero[coord.x][coord.y].estado == JOYA) {
         tDir inverso = static_cast<tDir>((dir+2)%4);  // Norte <-> Sur, Este <-> Oeste
-        animateLaser(juego, inverso, x, y, color);
-    } else if (juego.tablero[x][y].estado == TORTUGA) {
+        animateLaser(juego, inverso, coord, color);
+    } else if (juego.tablero[coord.x][coord.y].estado == TORTUGA) {
         // Hacemos "dos veces" el calculo del movimiento, sacrificando unos pocos recursos para poder mantener
         // la interfaz independiente de los calculos del juego
-        tTortuga & tortuga = juego.tablero[x][y].tortuga;
-        while ( calcularPos(x, y, dir) && moverTortuga(juego, x, y, tortuga) ) {
+        tTortuga & tortuga = juego.tablero[coord.x][coord.y].tortuga;
+        while ( calcularPos(coord, dir) && moverTortuga(juego, coord, tortuga) ) {
             mostrarJuego(juego);
             __sleep(MOVE_DELAY);
         }
@@ -357,11 +359,10 @@ bool ejecutarSecuencia(tJuego & juego, tMazo & secuencia) {
         case carta::IZQUIERDA: girar(juego, 0); break;
         case carta::LASER:
         {
-            // TODO: HAcer que el laser haga algo
-            int x = juego.jugadores[juego.turno].x, y = juego.jugadores[juego.turno].y;
+            tCoord coord = juego.jugadores[juego.turno].pos;
             unsigned color = paleta[juego.turno + NUM_TIPOS_CASILLAS];
-            animateLaser(juego, juego.tablero[x][y].tortuga.direccion, x, y, color);
-            disparar(juego);
+            animateLaser(juego, juego.tablero[coord.x][coord.y].tortuga.direccion, coord, color);
+            joya = disparar(juego);
             break;
         }
         case carta::NADA:

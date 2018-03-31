@@ -4,15 +4,15 @@
 #include <algorithm>
 #include <string>
 
-constexpr unsigned CARTAS_DISTINTAS = 4;
+constexpr unsigned CARTAS_DISTINTAS = 5;
 namespace carta {
 // Lo metemos en un namespace para no confundirlo con las teclas
 // NADA sirve de "centinela"
-typedef enum { AVANZAR, IZQUIERDA, DERECHA, LASER, NADA } tCarta;
+typedef enum { AVANZAR, IZQUIERDA, DERECHA, LASER, BICHO, NADA } tCarta;
 }  // namespace carta
 // De esta manera, si queremos modificar el numero de cartas en el mazo, es
 // mucho mas facil
-constexpr unsigned nCartas[carta::NADA]{18, 8, 8, 4};
+constexpr unsigned nCartas[carta::NADA]{18, 8, 8, 4, 1};
 // Tenemos una funcion sum() que calcula en tiempo de compilacion el NUM_CARTAS
 constexpr unsigned sum(const unsigned arr[], const unsigned size) {
   unsigned sum = 0;
@@ -25,6 +25,7 @@ constexpr unsigned NUM_CARTAS = sum(nCartas, CARTAS_DISTINTAS);
 typedef struct {
   carta::tCarta mazo[NUM_CARTAS];
   unsigned cnt;  // Inicializar a 0 en crearVacia
+  bool bichoUsado;  // Indica si se ha utilizado el bicho
 } tMazo;
 
 void crearVacia(tMazo &);

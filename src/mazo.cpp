@@ -1,6 +1,9 @@
 #include "mazo.h"
 
-void crearVacia(tMazo& mazo) { mazo.cnt = 0; }
+void crearVacia(tMazo& mazo) {
+    mazo.cnt = 0;
+    mazo.bichoUsado = false;
+}
 
 void crearMazoOrdenado(tMazo& mazo) {
   // Primero rellenamos el array. Recorremos las distintas cartas que existen
@@ -43,7 +46,9 @@ bool sacar(tMazo& mazo, carta::tCarta & carta) {
 
 bool insertar(tMazo& mazo, const carta::tCarta carta) {
   bool posible = mazo.cnt < NUM_CARTAS;
-  if (posible) {
+  if (carta == carta::BICHO) {
+      mazo.bichoUsado = true;  // Y no lo metemos al mazo
+  } else if (posible) {
     mazo.mazo[mazo.cnt] = carta;
     mazo.cnt++;
   }
@@ -57,6 +62,7 @@ std::string carta2str(const carta::tCarta carta) {
     case carta::IZQUIERDA: return "<";
     case carta::DERECHA: return ">";
     case carta::LASER: return "~";
+    case carta::BICHO: return "&";
     default: return "?";
     }
 }
