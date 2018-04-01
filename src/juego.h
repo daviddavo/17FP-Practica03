@@ -22,8 +22,8 @@
 typedef int tMano[carta::NADA];
 
 typedef struct {
-    int x;
-    int y;
+  int x;
+  int y;
 } tCoord;
 
 typedef struct {
@@ -47,12 +47,17 @@ typedef struct {
 } tJuego;
 
 bool manoVacia(tMano);  // Retorna true si todos los elementos son 0 o menores
-bool calcularPos(tCoord &, const tDir);  // Calcula la siguiente posicion (si es posible) dada una dir
+bool calcularPos(
+    tCoord &,
+    const tDir);  // Calcula la siguiente posicion (si es posible) dada una dir
 void cambiarTurno(tJuego &);  // Avanza un turno
-bool cargarJuego(tJuego &, const std::string, const int, const std::string[]);  // Carga el Juego
-bool accionRobar(tJuego &);  // Hace la accion de robar una carta para el jugador del turno actual
+bool cargarJuego(tJuego &, const std::string, const int,
+                 const std::string[]);  // Carga el Juego
+bool accionRobar(tJuego &);  // Hace la accion de robar una carta para el
+                             // jugador del turno actual
 
-bool moverTortuga(tJuego &, const tCoord &, const tTortuga &);  // Mueve la tortuga a unas coordenadas
+bool moverTortuga(tJuego &, const tCoord &,
+                  const tTortuga &);  // Mueve la tortuga a unas coordenadas
 
 void addMsg(std::string[LOG_SIZE], std::string);
 
