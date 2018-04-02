@@ -29,12 +29,10 @@ const unsigned w2l[16] = {
     107,  // Blanco claro -> Blanco
 };        // Reset es el 49
 
-void colorFondo(
-    const unsigned);  // Cambia el color del fondo (manteniendo el texto)
-void colorTexto(
-    const unsigned);  // Cambia el color del texto (manteniendo el fondo)
-void colorReset();    // Pone los colores por defecto
-void clear();         // Limpia la pantalla
+void colorFondo(const unsigned);            // Cambia el color del fondo (manteniendo el texto)
+void colorTexto(const unsigned);            // Cambia el color del texto (manteniendo el fondo)
+void colorReset();                          // Pone los colores por defecto
+void clear();                               // Limpia la pantalla
 void move(const unsigned, const unsigned);  // Mueve el cursor a una posicion
 
 #endif  // SRC_COLOR_H_

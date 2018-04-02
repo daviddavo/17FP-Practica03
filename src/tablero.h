@@ -14,25 +14,17 @@
 #include "config.h"
 
 typedef enum { NORTE, ESTE, SUR, OESTE } tDir;
-typedef enum {
-  VACIA,
-  HIELO,
-  MURO,
-  CAJA,
-  JOYA,
-  TORTUGA,
-  ANIMATION_LASER
-} tEstadoCasilla;
+typedef enum { VACIA, HIELO, MURO, CAJA, JOYA, TORTUGA, ANIMATION_LASER } tEstadoCasilla;
 typedef struct {
-  // tTortuga tambien es usado para laser, siendo numero la
-  // tortuga que lo ha lanzado y tDir la direccion del laser
-  unsigned numero;
-  tDir direccion;
+    // tTortuga tambien es usado para laser, siendo numero la
+    // tortuga que lo ha lanzado y tDir la direccion del laser
+    unsigned numero;
+    tDir direccion;
 } tTortuga;
 
 typedef struct {
-  tEstadoCasilla estado;
-  tTortuga tortuga;
+    tEstadoCasilla estado;
+    tTortuga tortuga;
 } tCasilla;
 
 typedef tCasilla tTablero[MAX_FILAS][MAX_FILAS];

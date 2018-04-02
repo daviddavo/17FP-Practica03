@@ -3,7 +3,6 @@
 void crearVacia(tMazo &mazo) {
     mazo.cnt = mazo.top = 0;
     mazo.bot = -1;
-    mazo.bichoUsado = false;
 }
 
 void crearMazoOrdenado(tMazo &mazo) {
@@ -19,7 +18,6 @@ void crearMazoOrdenado(tMazo &mazo) {
             insertar(mazo, static_cast<carta::tCarta>(i));
         }
     }
-    mazo.bichoUsado = false;
 }
 
 void crearMazoAleatorio(tMazo &mazo) {
@@ -44,13 +42,13 @@ bool sacar(tMazo &mazo, carta::tCarta &carta, bool superior /* = true */) {
             carta = mazo.mazo[mazo.top];
             mazo.mazo[mazo.top] = carta::NADA;
             if (mazo.top == 0)
-                mazo.top = NUM_CARTAS -1;
+                mazo.top = NUM_CARTAS - 1;
             else
                 mazo.top--;
         } else {
             carta = mazo.mazo[mazo.bot];
             mazo.mazo[mazo.bot] = carta::NADA;
-            if (mazo.bot == NUM_CARTAS -1)
+            if (mazo.bot == NUM_CARTAS - 1)
                 mazo.bot = 0;
             else
                 mazo.bot++;
@@ -81,8 +79,7 @@ bool insertar(tMazo &mazo, const carta::tCarta carta, bool superior /* = false *
             mazo.mazo[mazo.top] = carta;
         } else {
             // Damos 'la vuelta' por abajo
-            if (mazo.bot == 0)
-                mazo.bot = NUM_CARTAS - 1;
+            if (mazo.bot == 0) mazo.bot = NUM_CARTAS - 1;
             // Inserción normal
             else
                 mazo.bot--;
@@ -98,17 +95,17 @@ bool insertar(tMazo &mazo, const carta::tCarta carta, bool superior /* = false *
 
 std::string carta2str(const carta::tCarta carta) {
     switch (carta) {
-    case carta::AVANZAR:
-        return "^";
-    case carta::IZQUIERDA:
-        return "<";
-    case carta::DERECHA:
-        return ">";
-    case carta::LASER:
-        return "~";
-    case carta::BICHO:
-        return "&";
-    default:
-        return "?";
+        case carta::AVANZAR:
+            return "^";
+        case carta::IZQUIERDA:
+            return "<";
+        case carta::DERECHA:
+            return ">";
+        case carta::LASER:
+            return "~";
+        case carta::BICHO:
+            return "&";
+        default:
+            return "?";
     }
 }

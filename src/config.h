@@ -21,7 +21,7 @@ const unsigned COLOR_MANO = 1;      // Azul
 
 const unsigned LOG_SIZE = 10;  // Numero de mensajes que almacenar
 
-const unsigned MOVE_DELAY = 400;  // Tiempo en ms que dura cada "fotograma" de los movimientos
+const unsigned MOVE_DELAY = 400;   // Tiempo en ms que dura cada "fotograma" de los movimientos
 const unsigned LASER_DELAY = 200;  // Tiempo que tardara cada fotograma del laser
 // de la animacion de movimiento
 
