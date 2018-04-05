@@ -6,13 +6,19 @@
 #include "interface.h"
 
 // TODO: Borrar, solo pruebas
+/*
 #include "mazo.h"
+using namespace std;
+#include "interface.h"
+*/
 
 int main() {
     // Necesario para random_shuffle
     srand(time(NULL));
 
     mainMenu();
+
+    // while(cout << _getch() << endl) {}  // Muestra la tecla pulsada
 
     /*
     tMazo mazo;

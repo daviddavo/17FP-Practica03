@@ -3,6 +3,8 @@
 
 // Archivo para constantes y otras configuraciones
 
+constexpr int CARTAS_INICIALES = 3;
+
 /* TABLERO */
 constexpr int MAX_FILAS = 8;
 constexpr unsigned MAX_JUGADORES = 4;

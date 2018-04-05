@@ -141,11 +141,12 @@ string pedirFichero() {
 
 unsigned pedirJugadores() {
     unsigned j;
+    string basura;
     cout << "Introduce el numero de jugadores (1-" << MAX_JUGADORES << "): ";
     // con el !cin y el cin.clear() ya no peta al meter un char
     while (!(cin >> j) || (j < 1 || j > MAX_JUGADORES)) {
         cin.clear();
-        cin.ignore();
+        getline(cin, basura);
         colorTexto(0b0100);
         cout << "Introduce un numero del 1 al " << MAX_JUGADORES << ": ";
         colorReset();
@@ -256,7 +257,7 @@ int pedirJugBicho(tJuego &juego) {
             _getch();
         }
         j = c - '0' - 1;  // Convertimos de caracter a entero del 0 al 9, y este a índice (restamos '1')
-        if (std::isdigit(c) && j >= 0 && j <= juego.nJugadores) {
+        if (isdigit(c) && j >= 0 && j <= juego.nJugadores) {
             if (j == juego.turno) {
                 juego.log[0] = "No puedes deshacer tu turno, elige otro jugador";
             } else if (!juego.jugadores[j].jugando) {
@@ -391,7 +392,8 @@ void animateLaser(tJuego &juego, const tDir dir, const tCoord &source, const uns
     if (juego.tablero[coord.x][coord.y].estado == JOYA) {
         tDir inverso = static_cast<tDir>((dir + 2) % 4);  // Norte <-> Sur, Este <-> Oeste
         animateLaser(juego, inverso, coord, color);
-    } else if (juego.tablero[coord.x][coord.y].estado == TORTUGA) {
+    // Si se dispara a una tortuga y ésta está jugando
+    } else if (juego.tablero[coord.x][coord.y].estado == TORTUGA  && juego.jugadores[juego.tablero[coord.x][coord.y].tortuga.numero].jugando) {
         // Hacemos "dos veces" el calculo del movimiento, sacrificando unos pocos recursos para poder mantener
         // la interfaz independiente de los calculos del juego
         tTortuga &tortuga = juego.tablero[coord.x][coord.y].tortuga;
@@ -437,7 +439,6 @@ bool ejecutarSecuencia(tJuego &juego, tMazo &secuencia) {
             case carta::NADA:
                 cout << "Error?" << endl;
         }
-        // TODO: Sleep
         __sleep(MOVE_DELAY);
         mostrarJuego(juego);
     }
@@ -501,7 +502,7 @@ bool ejecutarTurno(tJuego &juego) {
         mostrarJuego(juego);
     }
 
-    return joya;  // TODO: Retornar si un jugador ha conseguido una joya
+    return joya;
 }
 
 // FUNCION INTERNA: Ejecuta una partida
@@ -512,9 +513,10 @@ void ejecutarPartida(tJuego &juego, tPuntuaciones &puntuaciones) {
     while (jugadoresJugando > 0 && !salir) {
         cambiarTurno(juego);
         if (ejecutarTurno(juego)) {
+        	juego.jugadores[juego.joya].jugando = false;
             actualizarPuntuacion(puntuaciones, juego.jugadores[juego.joya].nombre, jugadoresJugando);
             addMsg(juego.log, juego.jugadores[juego.joya].nombre + " ha ganado con " +
-                                  std::to_string(jugadoresJugando) + "puntos");
+                                  std::to_string(jugadoresJugando) + " puntos");
             salir = !continuar(puntuaciones);
             jugadoresJugando--;
         }
@@ -575,10 +577,9 @@ void mainMenu() {
         mostrarCabecera();
         cout << "\t\t\t 1. Jugar" << endl;
         cout << "\t\t\t 2. Mostrar puntuaciones" << endl;
-        cout << "\t\t\t 3. Como jugar" << endl << endl;
         cout << "\t\t\t 0. Salir" << endl;
         cout << "\t\t\t ";
-        n = pedirMenu(0, 3);
+        n = pedirMenu(0, 2);
         // cin.get(); // Obtenemos el endl, pero lo descartamos
         // getline(cin, basura); // Por alguna razon cin.clear() no va bien :(
         if (n == 1) {
@@ -589,9 +590,6 @@ void mainMenu() {
             mostrarPuntuaciones(puntuaciones);
             cout << endl << endl << "\t\t";
             anyKey();
-        } else if (n == 3) {
-            // TODO: help()
-            cout << "AUN SIN IMPLEMENTAR" << endl;
         }
     } while (n != 0);
 }

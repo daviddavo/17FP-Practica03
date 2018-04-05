@@ -2,7 +2,6 @@
 
 // Funcion interna para sort()
 bool sorter(const tPuntuacion &p1, const tPuntuacion &p2) {
-    // TODO: Si el nombre esta vacio, poner al final de la lista
     return p1.puntos > p2.puntos;
 }
 

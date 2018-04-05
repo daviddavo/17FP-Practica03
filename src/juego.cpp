@@ -38,16 +38,24 @@ bool cargarJuego(tJuego &juego, const string fname, const int nJugadores, const 
         for (int x = 0; x < MAX_FILAS && id < juego.nJugadores; x++) {
             for (int y = 0; y < MAX_FILAS && id < juego.nJugadores; y++) {
                 if (juego.tablero[x][y].estado == TORTUGA) {
-                    juego.jugadores[id].id = id;
+                	tJugador & jugador = juego.jugadores[id];
+                    jugador.id = id;
                     tCoord coord = {x, y};
-                    juego.jugadores[id].pos = coord;
-                    juego.jugadores[id].spawn = coord;
-                    juego.jugadores[id].jugando = true;
-                    juego.jugadores[id].nombre = nombres[id];
+                    jugador.pos = coord;
+                    jugador.spawn = coord;
+                    jugador.jugando = true;
+                    jugador.nombre = nombres[id];
                     // Ponemos su mano a 0
                     vaciarMano(juego.jugadores[id].mano);
                     // Y le creamos un mazo
                     crearMazoAleatorio(juego.jugadores[id].mazo);
+
+                    // Sacamos 3 cartas
+                    for (unsigned i = 0; i < CARTAS_INICIALES; i++) {
+						carta::tCarta carta;
+						sacar(jugador.mazo, carta);
+						jugador.mano[carta]++;
+					}
                     id++;
                 }
             }
@@ -195,17 +203,20 @@ bool disparar(tJuego &juego) {
             break;
         case TORTUGA: {
             tTortuga &tortugaDisparada = juego.tablero[coord.x][coord.y].tortuga;
-            addMsg(juego.log, jugador.nombre + " ha disparado a " + juego.jugadores[tortugaDisparada.numero].nombre);
-            // Las siguientes dos lineas no son realmente necesarias debido a animateLaser(), que modifica
-            // directamente el tablero de juego
-            while (calcularPos(coord, dir) && juego.tablero[coord.x][coord.y].estado == VACIA) {
+            // Si disparamos a una tortuga que ya no está jugando, no hacemos nada
+            if (juego.jugadores[tortugaDisparada.numero].jugando) {
+				addMsg(juego.log, jugador.nombre + " ha disparado a " + juego.jugadores[tortugaDisparada.numero].nombre);
+				// Las siguientes dos lineas no son realmente necesarias debido a animateLaser(), que modifica
+				// directamente el tablero de juego
+				while (calcularPos(coord, dir) && juego.tablero[coord.x][coord.y].estado == VACIA) {
+				}
+				if (juego.tablero[coord.x][coord.y].estado == JOYA) {
+					juego.joya = tortugaDisparada.numero;
+					joya = true;
+					juego.tablero[coord.x][coord.y].estado = VACIA;
+				}
+				moverTortuga(juego, coord, tortugaDisparada);
             }
-            if (juego.tablero[coord.x][coord.y].estado == JOYA) {
-                juego.joya = tortugaDisparada.numero;
-                joya = true;
-                juego.tablero[coord.x][coord.y].estado = VACIA;
-            }
-            moverTortuga(juego, coord, tortugaDisparada);
 
             break;
         }

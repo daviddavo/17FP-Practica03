@@ -30,7 +30,7 @@ int _getch();
 #endif
 
 namespace tecla {
-typedef enum { AVANZA, DERECHA, IZQUIERDA, DISPARO, BICHO, NADA, SALIR } tTecla;
+typedef enum { AVANZA, DERECHA, IZQUIERDA, DISPARO, BICHO, NADA, SALIR, DELETE } tTecla;
 }
 
 void _sleep(const int);    // Hace lo mismo que yo un domingo (dormir) durante x milisegundos
