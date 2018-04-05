@@ -488,17 +488,15 @@ bool ejecutarTurno(tJuego &juego) {
         juego.log[0] += " juega su turno";
 
         mostrarJuego(juego);  // Mostramos el mensaje para poder pedir la secuencia al usuario
-        // TODO: Volver a pedir una secuencia al usuario
-        if (pedirSecuencia(juego, secuencia)) {
-            joya = ejecutarSecuencia(juego, secuencia);
-        } else {
-        	// Si la secuencia ha sido inválida, se la mostramos al usuario
-            juego.log[0] = jugador.nombre + " ha intentado una secuencia invalida";
-            carta::tCarta movimiento;
-            while (sacar(secuencia, movimiento)) {
-            	juego.log[0] += " " + carta2str(movimiento) + " ";
-            }
+        while(!pedirSecuencia(juego, secuencia)) {
+        	juego.log[0] = jugador.nombre + ", esa es una secuencia invalida";
+        	carta::tCarta movimiento;  // Además aprovechamos para 'vaciar' (Sacar todas las cartas) de la secuencia
+        	while (sacar(secuencia, movimiento)) {
+        		juego.log[0] += " " + carta2str(movimiento) + " ";
+        	}
         }
+
+        joya = ejecutarSecuencia(juego, secuencia);
     } else if (c == 'b') {
     	// Intentamos usar el bicho
         jugador.mano[carta::BICHO] = 0;

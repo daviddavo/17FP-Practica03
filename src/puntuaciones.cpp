@@ -19,7 +19,7 @@ bool cargarPuntuaciones(tPuntuaciones &puntuaciones) {
     std::ifstream file(FILE_PUNTUACIONES);
     puntuaciones.cnt = 0;
 
-    for (unsigned i = 0; i < MAX_PUNTUACIONES; i++) {
+    for (unsigned i = 0; i < MAX_PUNTUACIONES && !file.fail(); i++) {
         tPuntuacion puntuacion;
         if (file >> puntuacion.nombre >> puntuacion.puntos) puntuaciones.puntuaciones[puntuaciones.cnt++] = puntuacion;
     }
@@ -44,8 +44,9 @@ bool actualizarPuntuacion(tPuntuaciones &puntuaciones, const std::string nombre,
         // Al ser una lista ordenada de mayor a menor, en caso de estar llena
         // La posicion MAX -1 sera la de menor puntuacion
         unsigned pos;
-        if (puntuaciones.cnt == MAX_PUNTUACIONES) {
-            pos = MAX_PUNTUACIONES - 1;
+        if (puntuaciones.cnt == MAX_PUNTUACIONES) { // Si la lista está llena
+            if (puntuaciones.puntuaciones[MAX_PUNTUACIONES-1].puntos < add) // Si el menor es menor que el nuevo
+            	pos = MAX_PUNTUACIONES - 1;
         } else {
             pos = puntuaciones.cnt;
             puntuaciones.cnt++;
