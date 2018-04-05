@@ -62,8 +62,6 @@ bool cargarJuego(tJuego &juego, const string fname, const int nJugadores, const 
         }
     }
 
-    // TODO: Meter en interface.cpp el !s
-
     return success;
 }
 
