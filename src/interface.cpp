@@ -590,4 +590,6 @@ void mainMenu() {
             anyKey();
         }
     } while (n != 0);
+
+	liberar(puntuaciones);
 }

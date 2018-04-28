@@ -6,13 +6,14 @@
 
 constexpr unsigned CARTAS_DISTINTAS = 5;
 namespace carta {
-// Lo metemos en un namespace para no confundirlo con las teclas
-// NADA sirve de "centinela"
-typedef enum { AVANZAR, IZQUIERDA, DERECHA, LASER, BICHO, NADA } tCarta;
+	// Lo metemos en un namespace para no confundirlo con las teclas
+	// NADA sirve de "centinela"
+	typedef enum { AVANZAR, IZQUIERDA, DERECHA, LASER, BICHO, NADA } tCarta;
+	typedef tCarta * tArrayPtrCartas[CARTAS_DISTINTAS];
 }  // namespace carta
 // De esta manera, si queremos modificar el numero de cartas en el mazo, es
 // mucho mas facil
-constexpr unsigned nCartas[carta::NADA]{18, 8, 8, 4, 1};
+constexpr unsigned nCartas[CARTAS_DISTINTAS]{18, 8, 8, 4, 1};
 // Tenemos una funcion sum() que calcula en tiempo de compilacion el NUM_CARTAS
 constexpr int sum(const unsigned arr[], const unsigned size) {
     int sum = 0;

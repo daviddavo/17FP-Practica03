@@ -11,7 +11,7 @@ constexpr unsigned MAX_JUGADORES = 4;
 constexpr unsigned NUM_TIPOS_CASILLAS = 7;  // Numero de tEstados distintos
 
 /* PUNTUACIONES */
-constexpr unsigned MAX_PUNTUACIONES = 8;  // Almacenamos 8 puntuaciones o.o
+constexpr unsigned INIT_PUNTUACIONES = 8; // Tamaño inicial del array de puntuaciones
 const char FILE_PUNTUACIONES[] = "puntuaciones.txt";
 
 /* INTERFAZ */
