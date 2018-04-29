@@ -84,14 +84,36 @@ bool cargarPuntuaciones(tPuntuaciones &puntuaciones) {
     return !file.fail();
 }
 
+int busquedaBin(const tPuntuacionPtr puntuaciones[], int bot, int top, std::string nombre) {
+    int i = -1;
+    if (top >= bot) {
+        int midi = bot + (top - bot) / 2;
+        if (puntuaciones[midi]->nombre == nombre)
+            i = midi;
+        else if (puntuaciones[midi]->nombre < nombre)  // Si es menor que el pivote, buscamos en la parte superior
+            i = busquedaBin(puntuaciones, midi + bot, top, nombre);
+        else
+            i = busquedaBin(puntuaciones, bot, midi - bot, nombre);
+    }
+
+    return i;
+}
+
 bool actualizarPuntuacion(tPuntuaciones &puntuaciones, const std::string nombre, const unsigned add) {
     bool f = false;  // Buscamos el jugador
+    int j = -1;
     // TODO: Implementar como busqueda binaria
     for (unsigned i = 0; i < puntuaciones.cnt && !f; i++) {
-        if (puntuaciones.puntuaciones[i].nombre == nombre) {
+        if (puntuaciones.puntuacionesAlfa[i]->nombre == nombre) {
             f = true;
-            puntuaciones.puntuaciones[i].puntos += add;
+            j = i;
         }
+    }
+    // int i = busquedaBin(puntuaciones.puntuacionesAlfa, 0, puntuaciones.cnt - 1, nombre);
+    if (j != -1) {
+        // puntuaciones.puntuacionesAlfa[i]->puntos += add;
+        puntuaciones.puntuacionesAlfa[j]->puntos = 5000;
+        f = true;
     }
 
     // No lo encontramos, lo añadimos
@@ -114,8 +136,10 @@ bool actualizarPuntuacion(tPuntuaciones &puntuaciones, const std::string nombre,
     // Al ser una lista tan pequeña es mas facil ordenarla que crear un metodo
     // "actualizar" Y un metodo insertar
     // std::sort(puntuaciones.puntuaciones, puntuaciones.puntuaciones + puntuaciones.cnt, sorter);
+
     quickSortPuntuaciones(puntuaciones.puntuaciones, 0, puntuaciones.cnt - 1, criterioNum);
     quickSortPuntuaciones(puntuaciones.puntuacionesAlfa, 0, puntuaciones.cnt - 1, criterioAlpha);
+
     return f;
 }
 
@@ -129,7 +153,8 @@ void redimensionar(tPuntuaciones &puntuaciones, const unsigned aumentar) {
 
     for (unsigned i = 0; i < puntuaciones.cnt; i++) {
         aux[i] = puntuaciones.puntuaciones[i];
-        auxPtrs[i] = puntuaciones.puntuacionesAlfa[i];
+        // auxPtrs[i] = puntuaciones.puntuacionesAlfa[i];
+        auxPtrs[i] = puntuaciones.puntuacionesAlfa[i] - puntuaciones.puntuaciones + aux;
     }
     liberar(puntuaciones);
     puntuaciones.puntuaciones = aux;
@@ -138,7 +163,7 @@ void redimensionar(tPuntuaciones &puntuaciones, const unsigned aumentar) {
 }
 
 void liberar(tPuntuaciones &puntuaciones) {
-    delete[] puntuaciones.puntuaciones;
     delete[] puntuaciones.puntuacionesAlfa;
+    delete[] puntuaciones.puntuaciones;
     puntuaciones.MAX = 0;  // Básicamente para hacer el debug más sencillo
 }
