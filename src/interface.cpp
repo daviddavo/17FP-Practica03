@@ -31,7 +31,8 @@ bool ejecutarSecuencia(tJuego &, tMazo &);        // Ejecuta una secuencia recib
 bool ejecutarTurno(tJuego &);                     // Se encarga de procesar un turno
 void ejecutarPartida(tJuego &, tPuntuaciones &);  // Se encarga de las funciones de una 'partida'
 void jugar(tPuntuaciones &);                      // Jugar al juego
-void mostrarPuntuaciones(const tPuntuaciones &);  // Mostrar las puntuaciones
+template <typename T>                             // Muestra puntuaciones, tanto si es un array de puntuaciones
+void mostrarPuntuaciones(const T[], unsigned);    // Como si es un array de punteros de puntuaciones
 
 // FUNCIONES DE FUNCIONALIDADES
 #ifdef __linux__
@@ -81,7 +82,8 @@ void __sleep(int ms) {  // Si la llamo sleep entra en conflicto
     // Usando time.h (libreria de C)
     // Como time_t funciona con segundos, vamos a usar clock_t
     clock_t fin = clock() + ms * CLOCKS_PER_SEC / 1000;
-    while (clock() < fin) {}  // Esperamos que se agote el tiempo
+    while (clock() < fin) {
+    }  // Esperamos que se agote el tiempo
 }
 
 // CONVERSION DE TIPOS
@@ -181,7 +183,7 @@ bool continuar(const tPuntuaciones &puntuaciones) {
     clear();
     mostrarCabecera();
     cout << endl;
-    mostrarPuntuaciones(puntuaciones);
+    mostrarPuntuaciones(puntuaciones.puntuaciones, puntuaciones.cnt);
     cout << endl << endl;
     cout << "\t\t\t Pulse espacio para continuar" << endl;
     cout << "\t\t Cualquier otra tecla para salir del juego" << endl;
@@ -389,8 +391,9 @@ void animateLaser(tJuego &juego, const tDir dir, const tCoord &source, const uns
     if (juego.tablero[coord.x][coord.y].estado == JOYA) {
         tDir inverso = static_cast<tDir>((dir + 2) % 4);  // Norte <-> Sur, Este <-> Oeste
         animateLaser(juego, inverso, coord, color);
-    // Si se dispara a una tortuga y ésta está jugando
-    } else if (juego.tablero[coord.x][coord.y].estado == TORTUGA  && juego.jugadores[juego.tablero[coord.x][coord.y].tortuga.numero].jugando) {
+        // Si se dispara a una tortuga y ésta está jugando
+    } else if (juego.tablero[coord.x][coord.y].estado == TORTUGA &&
+               juego.jugadores[juego.tablero[coord.x][coord.y].tortuga.numero].jugando) {
         // Hacemos "dos veces" el calculo del movimiento, sacrificando unos pocos recursos para poder mantener
         // la interfaz independiente de los calculos del juego
         tTortuga &tortuga = juego.tablero[coord.x][coord.y].tortuga;
@@ -447,12 +450,15 @@ bool ejecutarTurno(tJuego &juego) {
     // Suponemos que joya = false
     bool joya = false;
     tJugador &jugador = juego.jugadores[juego.turno];  // Alias para no poner continuamente juego.jugadores...
-    bool puedeUsarBicho = jugador.mano[carta::BICHO] > 0 && juego.nJugadores > 1;  // No puede usar un bicho contra sí mismo
-    string robjug;  // Así el usuario puede poner cosas como "robar" y sólo reconoceremos la r (en caso de MENU_GETCH = false)
+    bool puedeUsarBicho =
+        jugador.mano[carta::BICHO] > 0 && juego.nJugadores > 1;  // No puede usar un bicho contra sí mismo
+    string robjug;  // Así el usuario puede poner cosas como "robar" y sólo reconoceremos la r (en caso de MENU_GETCH =
+                    // false)
     char c;  // Carácter pulsado
 
     if (puedeUsarBicho)
-        addMsg(juego.log, jugador.nombre + ", juegas, robas, o usas  al bicho? (R/E/B)");  // Win2 no tiene el caracter '¿'
+        addMsg(juego.log,
+               jugador.nombre + ", juegas, robas, o usas  al bicho? (R/E/B)");  // Win2 no tiene el caracter '¿'
     else
         addMsg(juego.log, jugador.nombre + ", juegas o robas? (R/E)");
 
@@ -468,13 +474,13 @@ bool ejecutarTurno(tJuego &juego) {
         } else {
             cin >> robjug;
             c = tolower(robjug[0]);  // Convertimos el caracter a minuscula
-            cin.ignore();  // Si no leertecla no funcionara
+            cin.ignore();            // Si no leertecla no funcionara
         }
     } while (c != 'r' && c != 'e' && !(c == 'b' && puedeUsarBicho));
 
     juego.log[0] = jugador.nombre;  // Sustituimos el mensaje anterior
     if (manoVacia(jugador.mano)) {
-    	// Si su mano está vacía, le obligamos a robar
+        // Si su mano está vacía, le obligamos a robar
         juego.log[0] += " no tienes cartas, tienes que robar";
         accionRobar(juego);
     } else if (c == 'r') {
@@ -488,17 +494,17 @@ bool ejecutarTurno(tJuego &juego) {
         juego.log[0] += " juega su turno";
 
         mostrarJuego(juego);  // Mostramos el mensaje para poder pedir la secuencia al usuario
-        while(!pedirSecuencia(juego, secuencia)) {
-        	juego.log[0] = jugador.nombre + ", esa es una secuencia invalida";
-        	carta::tCarta movimiento;  // Además aprovechamos para 'vaciar' (Sacar todas las cartas) de la secuencia
-        	while (sacar(secuencia, movimiento)) {
-        		juego.log[0] += " " + carta2str(movimiento) + " ";
-        	}
+        while (!pedirSecuencia(juego, secuencia)) {
+            juego.log[0] = jugador.nombre + ", esa es una secuencia invalida";
+            carta::tCarta movimiento;  // Además aprovechamos para 'vaciar' (Sacar todas las cartas) de la secuencia
+            while (sacar(secuencia, movimiento)) {
+                juego.log[0] += " " + carta2str(movimiento) + " ";
+            }
         }
 
         joya = ejecutarSecuencia(juego, secuencia);
     } else if (c == 'b') {
-    	// Intentamos usar el bicho
+        // Intentamos usar el bicho
         jugador.mano[carta::BICHO] = 0;
         juego.log[0] += " introduzca el número del jugador del que quieres deshacer su jugada:";
         mostrarJuego(juego);
@@ -515,21 +521,23 @@ void ejecutarPartida(tJuego &juego, tPuntuaciones &puntuaciones) {
 
     // Mientras que haya algún jugador jugando y no se haya pulsado salir
     while (jugadoresJugando > 0 && !salir) {
-        cambiarTurno(juego);  // Siguiente turno
+        cambiarTurno(juego);         // Siguiente turno
         if (ejecutarTurno(juego)) {  // Ejecutamos dicho turno, si se consigue una joya hacemos lo siguiente
-        	juego.jugadores[juego.joya].jugando = false;  // El jugador deja de jugar
-            actualizarPuntuacion(puntuaciones, juego.jugadores[juego.joya].nombre, jugadoresJugando);  // Actualizamos su puntuación
-            addMsg(juego.log, juego.jugadores[juego.joya].nombre + " ha ganado con " + std::to_string(jugadoresJugando) + " puntos");
+            juego.jugadores[juego.joya].jugando = false;  // El jugador deja de jugar
+            actualizarPuntuacion(puntuaciones, juego.jugadores[juego.joya].nombre,
+                                 jugadoresJugando);  // Actualizamos su puntuación
+            addMsg(juego.log, juego.jugadores[juego.joya].nombre + " ha ganado con " +
+                                  std::to_string(jugadoresJugando) + " puntos");
             salir = !continuar(puntuaciones);  // Pedimos que si se quiere continuar
-            jugadoresJugando--;  // Un jugador menos sigue jugando
+            jugadoresJugando--;                // Un jugador menos sigue jugando
         }
     }
 }
 
 void jugar(tPuntuaciones &puntuaciones) {
     tJuego juego;
-    string fname = pedirFichero(); // Pedimos el nombre del archivo lo primero
-    unsigned nJ = pedirJugadores();  // Y después el número de jugadores
+    string fname = pedirFichero();    // Pedimos el nombre del archivo lo primero
+    unsigned nJ = pedirJugadores();   // Y después el número de jugadores
     string jugadores[MAX_JUGADORES];  // Creamos un array temporal con el nombre de los jugadores
     for (unsigned i = 0; i < nJ; i++) {
         jugadores[i] = pedirNombre(i + 1);  // Pedimos los nombres y los metemos al array
@@ -537,30 +545,39 @@ void jugar(tPuntuaciones &puntuaciones) {
     cin.ignore();  // Ignoramos el ultimo \n
 
     if (cargarJuego(juego, fname, nJ, jugadores)) {  // Cargamos el juego con los datos dados
-        ejecutarPartida(juego, puntuaciones);  // Ejecutamos la partida
-        guardarPuntuaciones(puntuaciones);     // Guardamos las puntuaciones al fichero
-    } else {  // No se ha podido cargar el tablero
-        colorTexto(0b0100);  // Color rojo oscuro
+        ejecutarPartida(juego, puntuaciones);        // Ejecutamos la partida
+        guardarPuntuaciones(puntuaciones);           // Guardamos las puntuaciones al fichero
+    } else {                                         // No se ha podido cargar el tablero
+        colorTexto(0b0100);                          // Color rojo oscuro
         cout << "El fichero existe, pero parece estar corrupto" << endl;
         colorReset();
         anyKey();
     }
 }
 
-void mostrarPuntuaciones(const tPuntuaciones &puntuaciones) {
+// Estas dos funciones se encargan de retornar un puntero para que pueda funcionar
+// mostrarPuntuaciones, iba a hacer un overload de operator->, pero queda muy cutre
+const tPuntuacion *punt(const tPuntuacion &punt) { return &punt; }
+const tPuntuacion *punt(const tPuntuacionPtr &punt) { return punt; }
+
+// Para ahorrarnos el tener que hacer copiapega de esta función para poder mostrar
+// tPuntuacion y tPuntuacionPtr, vamos a usar ptr()
+template <class T>
+void mostrarPuntuaciones(const T puntuaciones[], unsigned cnt) {
     // Primero vamos a ver cual es el nombre que mas ocupa
     unsigned maxw = 0;
-    for (unsigned i = 0; i < puntuaciones.cnt; i++) {
-        if (puntuaciones.puntuaciones[i].nombre.length() > maxw) maxw = puntuaciones.puntuaciones[i].nombre.length();
+
+    for (unsigned i = 0; i < cnt; i++) {
+        if (punt(puntuaciones[i])->nombre.length() > maxw) maxw = punt(puntuaciones[i])->nombre.length();
     }
 
     // Y ahora mostramos las puntuaciones
     colorTexto(0b1100);  // Brillante rojo
     cout << "\t\t\tPuntuaciones:" << endl;
     colorReset();
-    for (unsigned i = 0; i < puntuaciones.cnt; i++) {
-        cout << "\t\t\t" << std::setw(maxw + 2) << puntuaciones.puntuaciones[i].nombre << std::right << std::setw(5)
-             << puntuaciones.puntuaciones[i].puntos << endl;
+    for (unsigned i = 0; i < cnt; i++) {
+        cout << "\t\t\t" << std::setw(maxw + 2) << punt(puntuaciones[i])->nombre << std::right << std::setw(5)
+             << punt(puntuaciones[i])->puntos << endl;
     }
 }
 
@@ -569,7 +586,7 @@ void mainMenu() {
     tPuntuaciones puntuaciones;
     cargarPuntuaciones(puntuaciones);
 
-    int n;          // Donde almacenaremos la respuesta del usuario
+    int n, m;       // Donde almacenaremos la respuesta del usuario
     string basura;  // Para descartar el \n
 
     do {
@@ -585,11 +602,21 @@ void mainMenu() {
         } else if (n == 2) {  // Mostrar puntuaciones
             clear();
             mostrarCabecera();
-            mostrarPuntuaciones(puntuaciones);
+            cout << "\t\t\t 1. Ranking" << endl;
+            cout << "\t\t\t 2. Orden alfabetico" << endl;
+            cout << "\t\t\t ";
+            m = pedirMenu(1, 2);
+            clear();
+            mostrarCabecera();
+            if (m == 1)
+                mostrarPuntuaciones(puntuaciones.puntuaciones, puntuaciones.cnt);
+            else
+                mostrarPuntuaciones(puntuaciones.puntuacionesAlfa, puntuaciones.cnt);
+
             cout << endl << endl << "\t\t";
             anyKey();
         }
     } while (n != 0);
 
-	liberar(puntuaciones);
+    liberar(puntuaciones);
 }
