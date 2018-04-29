@@ -11,15 +11,16 @@ constexpr unsigned MAX_JUGADORES = 4;
 constexpr unsigned NUM_TIPOS_CASILLAS = 7;  // Numero de tEstados distintos
 
 /* PUNTUACIONES */
-constexpr unsigned INIT_PUNTUACIONES = 8; // Tamaño inicial del array de puntuaciones
+constexpr unsigned INIT_PUNTUACIONES = 8;  // TamaÃ±o inicial del array de puntuaciones
 const char FILE_PUNTUACIONES[] = "puntuaciones.txt";
 
 /* INTERFAZ */
 const bool MENU_GETCH = true;  // Si quieres que los menus vayan con getch o con entrada cin
 const unsigned paleta[NUM_TIPOS_CASILLAS + MAX_JUGADORES] = {1, 11, 7, 4, 12, 5, 1, 13, 9, 10, 3};
-const unsigned COLOR_TEXTO = 15;    // Blanco
-const unsigned COLOR_CABECERA = 2;  // Verde
-const unsigned COLOR_MANO = 1;      // Azul
+const unsigned COLOR_TEXTO = 15;         // Blanco
+const unsigned COLOR_CABECERA = 2;       // Verde
+const unsigned COLOR_MANO = 1;           // Azul
+const unsigned SCROLL_PUNTUACIONES = 8;  // Puntuaciones a mostrar en la pantalla de puntuaciones
 
 const unsigned LOG_SIZE = 10;  // Numero de mensajes que almacenar
 

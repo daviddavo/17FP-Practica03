@@ -31,8 +31,9 @@ bool ejecutarSecuencia(tJuego &, tMazo &);        // Ejecuta una secuencia recib
 bool ejecutarTurno(tJuego &);                     // Se encarga de procesar un turno
 void ejecutarPartida(tJuego &, tPuntuaciones &);  // Se encarga de las funciones de una 'partida'
 void jugar(tPuntuaciones &);                      // Jugar al juego
-template <typename T>                             // Muestra puntuaciones, tanto si es un array de puntuaciones
-void mostrarPuntuaciones(const T[], unsigned);    // Como si es un array de punteros de puntuaciones
+// template <typename T>                             // Muestra puntuaciones, tanto si es un array de puntuaciones
+// void mostrarPuntuaciones(const T[], int, int = 0, int = 0);  // Como si es un array de punteros de puntuaciones
+void mostrarPuntuaciones(const tPuntuaciones &, bool = false);
 
 // FUNCIONES DE FUNCIONALIDADES
 #ifdef __linux__
@@ -52,6 +53,7 @@ int _getch() {
     // Los caracteres especiales en linux son en realidad tres caracteres
     // Siendo la flecha hacia arriba: 'ESC'[A, o derecha \[D, luego, mediante una
     // pequeña recursion convertiremos dichos caracteres de Linux a Win2
+    // Esto sería lo mismo que usar _getchw y yastá
     if (ch == '\e') {
         ch = 0xe0;           // Decimos que es un "caracter especial"
     } else if (ch == '[') {  // Los caracteres especiales en Linux tienen esto
@@ -60,6 +62,9 @@ int _getch() {
             case 65:
                 return 72;
                 break;  // Arriba
+            case 66:
+                return 80;
+                break;  // Abajo
             case 67:
                 return 77;
                 break;  // Derecha
@@ -180,14 +185,15 @@ string pedirNombre(const int i) {
 }
 
 bool continuar(const tPuntuaciones &puntuaciones) {
+    mostrarPuntuaciones(puntuaciones);
     clear();
     mostrarCabecera();
-    cout << endl;
-    mostrarPuntuaciones(puntuaciones.puntuaciones, puntuaciones.cnt);
     cout << endl << endl;
-    cout << "\t\t\t Pulse espacio para continuar" << endl;
-    cout << "\t\t Cualquier otra tecla para salir del juego" << endl;
-    return leerTecla() == tecla::DISPARO;
+    // TODO: DESEA SEGUIR JUGANDO?
+    cout << "\t\t\t 1. Seguir jugando" << endl;
+    cout << "\t\t\t 0. Salir" << endl;
+    cout << "\t\t\t ";
+    return pedirMenu(0, 1);
 }
 
 tecla::tTecla leerTecla() {
@@ -563,22 +569,58 @@ const tPuntuacion *punt(const tPuntuacionPtr &punt) { return punt; }
 // Para ahorrarnos el tener que hacer copiapega de esta función para poder mostrar
 // tPuntuacion y tPuntuacionPtr, vamos a usar ptr()
 template <class T>
-void mostrarPuntuaciones(const T puntuaciones[], unsigned cnt) {
+void mostrarArrPuntuaciones(const T puntuaciones[], int cnt, int top, int bot) {
     // Primero vamos a ver cual es el nombre que mas ocupa
     unsigned maxw = 0;
-
-    for (unsigned i = 0; i < cnt; i++) {
+    for (int i = 0; i < cnt; i++) {
         if (punt(puntuaciones[i])->nombre.length() > maxw) maxw = punt(puntuaciones[i])->nombre.length();
     }
 
     // Y ahora mostramos las puntuaciones
-    colorTexto(0b1100);  // Brillante rojo
-    cout << "\t\t\tPuntuaciones:" << endl;
-    colorReset();
-    for (unsigned i = 0; i < cnt; i++) {
+    for (int i = bot; i < top; i++) {
         cout << "\t\t\t" << std::setw(maxw + 2) << punt(puntuaciones[i])->nombre << std::right << std::setw(5)
              << punt(puntuaciones[i])->puntos << endl;
     }
+}
+
+void mostrarPuntuaciones(const tPuntuaciones &puntuaciones, bool alpha) {
+    int top = std::min(puntuaciones.cnt, SCROLL_PUNTUACIONES);
+    int bot = 0;
+    char c;
+    do {
+        clear();
+        mostrarCabecera();
+
+        colorTexto(0b1100);  // Brillante rojo
+        cout << "\t\t\tPuntuaciones (" << (alpha ? "Alfanumerico" : "Ranking") << "):" << endl;
+        colorReset();
+        if (alpha) {
+            mostrarArrPuntuaciones(puntuaciones.puntuacionesAlfa, puntuaciones.cnt, top, bot);
+        } else {
+            mostrarArrPuntuaciones(puntuaciones.puntuaciones, puntuaciones.cnt, top, bot);
+        }
+
+        cout << endl << "\t\t\t Use las flechas del teclado para hacer scroll" << endl;
+        cout << "\t\t\t  o cambiar el modo (ranking/alfabetico)" << endl;
+        cout << "\t\t\t Pulse espacio para continuar" << endl << "\t\t\t ";
+
+        do {
+            c = _getch();
+            if (c == 0xe0) {
+                c = 0;
+                _getch();
+            }
+        } while (c != 0x20 && c != 72 && c != 80 && c != 77 && c != 75);
+        if (c == 80) {
+            top = std::min(top + 1, static_cast<int>(puntuaciones.cnt));
+            bot = top - SCROLL_PUNTUACIONES;
+        } else if (c == 72) {
+            bot = std::max(bot - 1, 0);
+            top = SCROLL_PUNTUACIONES + bot;
+        } else if (c != 0x20) {
+            alpha = !alpha;
+        }
+    } while (c != 0x20);
 }
 
 void mainMenu() {
@@ -586,7 +628,7 @@ void mainMenu() {
     tPuntuaciones puntuaciones;
     cargarPuntuaciones(puntuaciones);
 
-    int n, m;       // Donde almacenaremos la respuesta del usuario
+    int n;          // Donde almacenaremos la respuesta del usuario
     string basura;  // Para descartar el \n
 
     do {
@@ -605,16 +647,10 @@ void mainMenu() {
             cout << "\t\t\t 1. Ranking" << endl;
             cout << "\t\t\t 2. Orden alfabetico" << endl;
             cout << "\t\t\t ";
-            m = pedirMenu(1, 2);
-            clear();
-            mostrarCabecera();
-            if (m == 1)
-                mostrarPuntuaciones(puntuaciones.puntuaciones, puntuaciones.cnt);
+            if (pedirMenu(1, 2) == 1)
+                mostrarPuntuaciones(puntuaciones);
             else
-                mostrarPuntuaciones(puntuaciones.puntuacionesAlfa, puntuaciones.cnt);
-
-            cout << endl << endl << "\t\t";
-            anyKey();
+                mostrarPuntuaciones(puntuaciones, true);
         }
     } while (n != 0);
 

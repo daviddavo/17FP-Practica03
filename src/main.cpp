@@ -14,7 +14,7 @@ int main() {
 
     mainMenu();
 
-    // while(cout << _getch() << endl) {}  // Muestra la tecla pulsada
+    // while (std::cout << _getch() << std::endl);  // Muestra la tecla pulsada
 
     return 0;
 }

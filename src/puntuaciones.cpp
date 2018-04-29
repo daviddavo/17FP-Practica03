@@ -108,12 +108,14 @@ bool actualizarPuntuacion(tPuntuaciones &puntuaciones, const std::string nombre,
         puntuaciones.cnt++;
         puntuaciones.puntuaciones[pos].nombre = nombre;
         puntuaciones.puntuaciones[pos].puntos = add;
+        puntuaciones.puntuacionesAlfa[pos] = &puntuaciones.puntuaciones[pos];
     }
 
     // Al ser una lista tan pequeña es mas facil ordenarla que crear un metodo
     // "actualizar" Y un metodo insertar
     // std::sort(puntuaciones.puntuaciones, puntuaciones.puntuaciones + puntuaciones.cnt, sorter);
-    quickSortPuntuaciones(puntuaciones.puntuaciones, 0, puntuaciones.cnt, criterioNum);
+    quickSortPuntuaciones(puntuaciones.puntuaciones, 0, puntuaciones.cnt - 1, criterioNum);
+    quickSortPuntuaciones(puntuaciones.puntuacionesAlfa, 0, puntuaciones.cnt - 1, criterioAlpha);
     return f;
 }
 

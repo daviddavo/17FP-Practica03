@@ -1,9 +1,11 @@
-juan 209
-a 23
-c 14
-b 11
 davo 209
+juan 209
+a 25
+c 17
+b 11
 j4 8
 j2 6
+sjhfa 3
 d 2
+nuevo 2
 eva 1
