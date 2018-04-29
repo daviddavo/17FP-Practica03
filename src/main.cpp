@@ -7,7 +7,9 @@
 
 int main() {
     // Necesario para random_shuffle
-	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+#ifdef _WIN32
+    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+#endif
     srand(time(NULL));
 
     mainMenu();
