@@ -25,7 +25,7 @@ constexpr int NUM_CARTAS = sum(nCartas, CARTAS_DISTINTAS);
 
 // Vamos a implementar tMazo como una cola, implementada como un array circular
 typedef struct {
-    carta::tCarta mazo[NUM_CARTAS];
+    carta::tCarta* mazo[NUM_CARTAS];
     int cnt;  // Inicializar a 0 en crearVacia
     int bot;  // Donde van a entrar los nuevos elementos a la cola
     int top;  // Donde van a salir los nuevos elementos en la cola

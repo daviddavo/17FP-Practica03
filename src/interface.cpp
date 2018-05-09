@@ -555,31 +555,25 @@ void jugar(tPuntuaciones &puntuaciones) {
         guardarPuntuaciones(puntuaciones);           // Guardamos las puntuaciones al fichero
     } else {                                         // No se ha podido cargar el tablero
         colorTexto(0b0100);                          // Color rojo oscuro
-        cout << "El fichero existe, pero parece estar corrupto" << endl;
+        cout << "El fichero existe, pero ha habido un error al cargar el juego" << endl;
         colorReset();
         anyKey();
     }
 }
 
-// Estas dos funciones se encargan de retornar un puntero para que pueda funcionar
-// mostrarPuntuaciones, iba a hacer un overload de operator->, pero queda muy cutre
-const tPuntuacion *punt(const tPuntuacion &punt) { return &punt; }
-const tPuntuacion *punt(const tPuntuacionPtr &punt) { return punt; }
-
 // Para ahorrarnos el tener que hacer copiapega de esta función para poder mostrar
 // tPuntuacion y tPuntuacionPtr, vamos a usar ptr()
-template <class T>
-void mostrarArrPuntuaciones(const T puntuaciones[], int cnt, int top, int bot) {
+void mostrarArrPuntuaciones(const tPuntuacionPtr puntuaciones[], int cnt, int top, int bot) {
     // Primero vamos a ver cual es el nombre que mas ocupa
     unsigned maxw = 0;
     for (int i = 0; i < cnt; i++) {
-        if (punt(puntuaciones[i])->nombre.length() > maxw) maxw = punt(puntuaciones[i])->nombre.length();
+        if (puntuaciones[i]->nombre.length() > maxw) maxw = puntuaciones[i]->nombre.length();
     }
 
     // Y ahora mostramos las puntuaciones
     for (int i = bot; i < top; i++) {
-        cout << "\t\t\t" << std::setw(maxw + 2) << punt(puntuaciones[i])->nombre << std::right << std::setw(5)
-             << punt(puntuaciones[i])->puntos << endl;
+        cout << "\t\t\t" << std::setw(maxw + 2) << puntuaciones[i]->nombre << std::right << std::setw(5)
+             << puntuaciones[i]->puntos << endl;
     }
 }
 
@@ -597,7 +591,7 @@ void mostrarPuntuaciones(const tPuntuaciones &puntuaciones, bool alpha) {
         if (alpha) {
             mostrarArrPuntuaciones(puntuaciones.puntuacionesAlfa, puntuaciones.cnt, top, bot);
         } else {
-            mostrarArrPuntuaciones(puntuaciones.puntuaciones, puntuaciones.cnt, top, bot);
+            mostrarArrPuntuaciones(puntuaciones.puntuacionesNum, puntuaciones.cnt, top, bot);
         }
 
         cout << endl << "\t\t\t Use las flechas del teclado para hacer scroll" << endl;

@@ -33,6 +33,7 @@ typedef tPuntuacion *tPuntuacionPtr;
 
 typedef struct {
     tPuntuacion *puntuaciones;
+    tPuntuacionPtr *puntuacionesNum;
     tPuntuacionPtr *puntuacionesAlfa;  // Alias of tPuntuacion **
     unsigned cnt;
     unsigned MAX;
@@ -45,5 +46,7 @@ bool guardarPuntuaciones(const tPuntuaciones &);  // Guarda las puntuaciones al 
 bool actualizarPuntuacion(tPuntuaciones &, const std::string, const unsigned);  // Actualiza el struct
 void redimensionar(tPuntuaciones &, const unsigned = 4);  // Redimensionar el array de puntuaciones
 void liberar(tPuntuaciones &);                            // Delete del array
+void quickSortPuntuaciones(tPuntuacionPtr[], const int, const int,
+                           bool (&)(const tPuntuacionPtr &, const tPuntuacionPtr &));
 
 #endif  // SRC_PUNTUACIONES_H_
