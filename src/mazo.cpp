@@ -3,7 +3,7 @@
 void crearVacia(tMazo &mazo) {
     mazo.cnt = mazo.top = 0;
     mazo.bot = -1;
-	for (int i = 0; i < NUM_CARTAS; i++) mazo.mazo[i] = NULL;
+    for (int i = 0; i < NUM_CARTAS; i++) mazo.mazo[i] = NULL;
 }
 
 void crearMazoOrdenado(tMazo &mazo) {
@@ -24,8 +24,7 @@ void crearMazoOrdenado(tMazo &mazo) {
 void crearMazoAleatorio(tMazo &mazo) {
     // Creamos un mazo ordenado y lo barajamos
     crearMazoOrdenado(mazo);
-    // Solo se va a poder 'barajar' si se acaba de crear el mazo, en el momento en
-    // el que begin != 0 ya no funcionaría
+    // Solo es posible barajar si mazo.cnt = NUM_CARTAS
     std::random_shuffle(mazo.mazo, mazo.mazo + NUM_CARTAS);
 }
 
@@ -36,23 +35,22 @@ bool sacar(tMazo &mazo, carta::tCarta &carta, bool superior /* = true */) {
         // Si solo hay un elemento, volvemos al '-1'
         if (mazo.bot == mazo.top) {
             carta = *mazo.mazo[mazo.bot];  // La carta es ese unico elemento
-            // TODO: Debug, borrar lo de NADA
             // mazo.mazo[mazo.bot] = carta::NADA;
-			delete mazo.mazo[mazo.bot];
-			mazo.mazo[mazo.bot] = NULL;
+            delete[] mazo.mazo[mazo.bot];
+            mazo.mazo[mazo.bot] = NULL;
             mazo.top = mazo.bot = -1;  // Ambos son '-1'
         } else if (superior) {
             carta = *mazo.mazo[mazo.top];
-			delete mazo.mazo[mazo.top];
-			mazo.mazo[mazo.bot] = NULL;
+            // delete[] mazo.mazo[mazo.top];
+            mazo.mazo[mazo.top] = NULL;
             if (mazo.top == 0)
                 mazo.top = NUM_CARTAS - 1;
             else
                 mazo.top--;
         } else {
             carta = *mazo.mazo[mazo.bot];
-			delete mazo.mazo[mazo.bot];
-			mazo.mazo[mazo.bot] = NULL;
+            // delete[] mazo.mazo[mazo.bot];
+            mazo.mazo[mazo.bot] = NULL;
             if (mazo.bot == NUM_CARTAS - 1)
                 mazo.bot = 0;
             else
@@ -74,8 +72,7 @@ bool insertar(tMazo &mazo, const carta::tCarta carta, bool superior /* = false *
         if (mazo.bot == -1) {
             mazo.top = 0;
             mazo.bot = 0;
-            mazo.mazo[0] = new carta::tCarta;
-			*mazo.mazo[0] = carta;
+            mazo.mazo[0] = new carta::tCarta(carta);
         } else if (superior) {
             // Damos la vuelta
             if (mazo.top == NUM_CARTAS - 1)
@@ -83,8 +80,7 @@ bool insertar(tMazo &mazo, const carta::tCarta carta, bool superior /* = false *
             else
                 mazo.top++;
 
-            mazo.mazo[mazo.top] = new carta::tCarta;
-			*mazo.mazo[mazo.top] = carta;
+            mazo.mazo[mazo.top] = new carta::tCarta(carta);
         } else {
             // Damos 'la vuelta' por abajo
             if (mazo.bot == 0) mazo.bot = NUM_CARTAS - 1;
@@ -92,8 +88,7 @@ bool insertar(tMazo &mazo, const carta::tCarta carta, bool superior /* = false *
             else
                 mazo.bot--;
 
-            mazo.mazo[mazo.bot] = new carta::tCarta;
-			*mazo.mazo[mazo.bot] = carta;
+            mazo.mazo[mazo.bot] = new carta::tCarta(carta);
         }
 
         mazo.cnt++;
@@ -119,8 +114,7 @@ std::string carta2str(const carta::tCarta carta) {
     }
 }
 
-void liberar(tMazo & mazo) {
-	for (int i = 0; i < NUM_CARTAS; i++)
-		if (mazo.mazo[i] != NULL)
-			delete mazo.mazo[i];
+void liberar(tMazo &mazo) {
+    for (int i = 0; i < NUM_CARTAS; i++)
+        if (mazo.mazo[i] != NULL) delete mazo.mazo[i];
 }

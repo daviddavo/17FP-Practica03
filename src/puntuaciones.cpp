@@ -86,61 +86,57 @@ bool cargarPuntuaciones(tPuntuaciones &puntuaciones) {
     return !file.fail();
 }
 
-/*
 int busquedaBin(const tPuntuacionPtr puntuaciones[], int bot, int top, std::string nombre) {
     int i = -1;
     if (top >= bot) {
         int midi = bot + (top - bot) / 2;
         if (puntuaciones[midi]->nombre == nombre)
             i = midi;
-        else if (puntuaciones[midi]->nombre < nombre)  // Si es menor que el pivote, buscamos en la parte superior
+        else if (puntuaciones[midi]->nombre < nombre)
             i = busquedaBin(puntuaciones, midi + bot, top, nombre);
         else
             i = busquedaBin(puntuaciones, bot, midi - bot, nombre);
     }
 
     return i;
-}*/
+}
+
+int busquedaBin(const tPuntuacionPtr puntuaciones[], int bot, int top, unsigned puntos) {
+    int i = -1;
+    if (top >= bot) {
+        int midi = bot + (top - bot) / 2;
+        if (puntuaciones[midi]->puntos == puntos)
+            i = midi;
+        else if (puntuaciones[midi]->puntos < puntos)
+            i = busquedaBin(puntuaciones, midi + bot, top, puntos);
+        else
+            i = busquedaBin(puntuaciones, bot, midi - bot, puntos);
+    }
+
+    return i;
+}
 
 bool actualizarPuntuacion(tPuntuaciones &puntuaciones, const std::string nombre, const unsigned add) {
-    bool f = false;  // Buscamos el jugador
-    int j = -1;
-    // TODO: Implementar como busqueda binaria
-    for (unsigned i = 0; i < puntuaciones.cnt && !f; i++) {
-        if (puntuaciones.puntuacionesAlfa[i]->nombre == nombre) {
-            f = true;
-            j = i;
-        }
-    }
-    // int i = busquedaBin(puntuaciones.puntuacionesAlfa, 0, puntuaciones.cnt - 1, nombre);
-    if (j != -1) {
-        // puntuaciones.puntuacionesAlfa[i]->puntos += add;
-        puntuaciones.puntuacionesAlfa[j]->puntos = 5000;
-        f = true;
-    }
+    // Primero vamos a buscar el jugador
+    int posAlpha = busquedaBin(puntuaciones.puntuacionesAlfa, 0, puntuaciones.cnt - 1, nombre);
+    if (posAlpha != -1) {
+        // Lo actualizamos en puntuacionesAlfa
+        puntuaciones.puntuacionesAlfa[posAlpha]->puntos += add;
+    } else {
+        // No lo encontramos, lo añadimos
+        if (puntuaciones.cnt == puntuaciones.MAX) redimensionar(puntuaciones);
 
-    // No lo encontramos, lo añadimos
-    if (!f) {
-        // Al ser una lista ordenada de mayor a menor, en caso de estar llena
-        // La posicion MAX -1 sera la de menor puntuacion
-        unsigned pos;
-        if (puntuaciones.cnt == puntuaciones.MAX) {  // Si la lista está llena
-            // if (puntuaciones.puntuaciones[MAX_PUNTUACIONES-1].puntos < add) // Si el menor es menor que el nuevo
-            // pos = MAX_PUNTUACIONES - 1;
-            redimensionar(puntuaciones);
-        }
-        pos = puntuaciones.cnt;
+        puntuaciones.puntuaciones[puntuaciones.cnt].nombre = nombre;
+        puntuaciones.puntuaciones[puntuaciones.cnt].puntos = add;
+        puntuaciones.puntuacionesAlfa[puntuaciones.cnt] = &puntuaciones.puntuaciones[puntuaciones.cnt];
+        puntuaciones.puntuacionesNum[puntuaciones.cnt] = &puntuaciones.puntuaciones[puntuaciones.cnt];
         puntuaciones.cnt++;
-        puntuaciones.puntuaciones[pos].nombre = nombre;
-        puntuaciones.puntuaciones[pos].puntos = add;
-        puntuaciones.puntuacionesAlfa[pos] = &puntuaciones.puntuaciones[pos];
+
+        quickSortPuntuaciones(puntuaciones.puntuacionesAlfa, 0, puntuaciones.cnt - 1, criterioAlpha);
     }
+    quickSortPuntuaciones(puntuaciones.puntuacionesNum, 0, puntuaciones.cnt - 1, criterioNum);
 
-    // Al ser una lista tan pequeña es mas facil ordenarla que crear un metodo
-    // "actualizar" Y un metodo insertar
-    // std::sort(puntuaciones.puntuaciones, puntuaciones.puntuaciones + puntuaciones.cnt, sorter);
-
-    return f;
+    return posAlpha != -1;
 }
 
 void redimensionar(tPuntuaciones &puntuaciones, const unsigned aumentar) {
@@ -155,7 +151,6 @@ void redimensionar(tPuntuaciones &puntuaciones, const unsigned aumentar) {
 
     for (unsigned i = 0; i < puntuaciones.cnt; i++) {
         aux[i] = puntuaciones.puntuaciones[i];
-        // auxPtrs[i] = puntuaciones.puntuacionesAlfa[i];
         auxPtrsAlfa[i] = puntuaciones.puntuacionesAlfa[i] - puntuaciones.puntuaciones + aux;
         auxPtrsNum[i] = puntuaciones.puntuacionesNum[i] - puntuaciones.puntuaciones + aux;
     }

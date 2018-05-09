@@ -1,8 +1,8 @@
 eva 5000
 davo 209
 juan 209
-a 25
-c 17
+a 27
+c 20
 b 11
 j4 8
 j2 6
