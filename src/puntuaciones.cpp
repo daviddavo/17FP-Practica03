@@ -88,29 +88,16 @@ bool cargarPuntuaciones(tPuntuaciones &puntuaciones) {
 
 int busquedaBin(const tPuntuacionPtr puntuaciones[], int bot, int top, std::string nombre) {
     int i = -1;
-    if (top >= bot) {
+    while (i == -1 && top >= bot) {
         int midi = bot + (top - bot) / 2;
-        if (puntuaciones[midi]->nombre == nombre)
-            i = midi;
-        else if (puntuaciones[midi]->nombre < nombre)
-            i = busquedaBin(puntuaciones, midi + bot, top, nombre);
-        else
-            i = busquedaBin(puntuaciones, bot, midi - bot, nombre);
-    }
-
-    return i;
-}
-
-int busquedaBin(const tPuntuacionPtr puntuaciones[], int bot, int top, unsigned puntos) {
-    int i = -1;
-    if (top >= bot) {
-        int midi = bot + (top - bot) / 2;
-        if (puntuaciones[midi]->puntos == puntos)
-            i = midi;
-        else if (puntuaciones[midi]->puntos < puntos)
-            i = busquedaBin(puntuaciones, midi + bot, top, puntos);
-        else
-            i = busquedaBin(puntuaciones, bot, midi - bot, puntos);
+		if (puntuaciones[midi]->nombre == nombre)
+			i = midi;
+		else if (puntuaciones[midi]->nombre < nombre)
+			// i = busquedaBin(puntuaciones, midi + 1, top, nombre);
+			bot = midi + 1;
+		else
+			// i = busquedaBin(puntuaciones, bot, midi - 1, nombre);
+			top = midi - 1;
     }
 
     return i;

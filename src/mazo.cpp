@@ -41,7 +41,7 @@ bool sacar(tMazo &mazo, carta::tCarta &carta, bool superior /* = true */) {
             mazo.top = mazo.bot = -1;  // Ambos son '-1'
         } else if (superior) {
             carta = *mazo.mazo[mazo.top];
-            // delete[] mazo.mazo[mazo.top];
+            delete[] mazo.mazo[mazo.top];
             mazo.mazo[mazo.top] = NULL;
             if (mazo.top == 0)
                 mazo.top = NUM_CARTAS - 1;
@@ -49,7 +49,7 @@ bool sacar(tMazo &mazo, carta::tCarta &carta, bool superior /* = true */) {
                 mazo.top--;
         } else {
             carta = *mazo.mazo[mazo.bot];
-            // delete[] mazo.mazo[mazo.bot];
+            delete[] mazo.mazo[mazo.bot];
             mazo.mazo[mazo.bot] = NULL;
             if (mazo.bot == NUM_CARTAS - 1)
                 mazo.bot = 0;
@@ -115,6 +115,8 @@ std::string carta2str(const carta::tCarta carta) {
 }
 
 void liberar(tMazo &mazo) {
-    for (int i = 0; i < NUM_CARTAS; i++)
-        if (mazo.mazo[i] != NULL) delete mazo.mazo[i];
+    //for (int i = 0; i < NUM_CARTAS; i++)
+        //	if (mazo.mazo[i] != NULL) delete mazo.mazo[i];
+	carta::tCarta carta;
+	while (sacar(mazo, carta));
 }

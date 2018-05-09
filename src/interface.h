@@ -33,7 +33,7 @@ namespace tecla {
 typedef enum { AVANZA, DERECHA, IZQUIERDA, DISPARO, BICHO, NADA, SALIR, DELETE } tTecla;
 }
 
-void _sleep(const int);    // Hace lo mismo que yo un domingo (dormir) durante x milisegundos
+void __sleep(const int);    // Hace lo mismo que yo un domingo (dormir) durante x milisegundos
 void mainMenu();           // Menu principal del juego
 void anyKey(std::string);  // Pulse cualquier tecla para continuar
 

@@ -509,6 +509,7 @@ bool ejecutarTurno(tJuego &juego) {
         }
 
         joya = ejecutarSecuencia(juego, secuencia);
+		liberar(secuencia);
     } else if (c == 'b') {
         // Intentamos usar el bicho
         jugador.mano[carta::BICHO] = 0;
@@ -538,6 +539,9 @@ void ejecutarPartida(tJuego &juego, tPuntuaciones &puntuaciones) {
             jugadoresJugando--;                // Un jugador menos sigue jugando
         }
     }
+
+	for (int i = 0; i < juego.nJugadores; i++) 
+		liberar(juego.jugadores[i].mazo);
 }
 
 void jugar(tPuntuaciones &puntuaciones) {

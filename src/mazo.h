@@ -1,6 +1,16 @@
 #ifndef SRC_MAZO_H_
 #define SRC_MAZO_H_
 
+#ifdef _DEBUG 
+#define _CRTDBG_MAP_ALLOC 
+#include <stdlib.h> 
+#include <crtdbg.h> 
+#ifndef DBG_NEW 
+#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ ) 
+#define new DBG_NEW 
+#endif 
+#endif
+
 #include <algorithm>
 #include <string>
 
@@ -40,5 +50,6 @@ void crearMazoAleatorio(tMazo &);
 bool sacar(tMazo &, carta::tCarta &, bool = true);          // El booleano indica si queremos insertarlo por arriba
 bool insertar(tMazo &, const carta::tCarta, bool = false);  // Idem
 std::string carta2str(const carta::tCarta);
+void liberar(tMazo &);										// Libera el espacio dedicado a un mazo
 
 #endif  // SRC_MAZO_H_
