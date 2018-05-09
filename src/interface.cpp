@@ -607,10 +607,10 @@ void mostrarPuntuaciones(const tPuntuaciones &puntuaciones, bool alpha) {
         } while (c != 0x20 && c != 72 && c != 80 && c != 77 && c != 75);
         if (c == 80) {
             top = std::min(top + 1, static_cast<int>(puntuaciones.cnt));
-            bot = top - SCROLL_PUNTUACIONES;
+            bot = std::max(static_cast<int>(top - SCROLL_PUNTUACIONES), static_cast<int>(bot));
         } else if (c == 72) {
             bot = std::max(bot - 1, 0);
-            top = SCROLL_PUNTUACIONES + bot;
+            top = std::min(bot + SCROLL_PUNTUACIONES, static_cast<unsigned>(top));
         } else if (c != 0x20) {
             alpha = !alpha;
         }

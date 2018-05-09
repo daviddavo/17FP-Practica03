@@ -1,9 +1,19 @@
 #ifndef SRC_CONFIG_H_
 #define SRC_CONFIG_H_
 
+#ifdef _DEBUG
+#define _CRTDBG_MAP_ALLOC
+#include <crtdbg.h>
+#include <stdlib.h>
+#ifndef DBG_NEW
+#define DBG_NEW new (_NORMAL_BLOCK, __FILE__, __LINE__)
+#define new DBG_NEW
+#endif
+#endif
+
 // Archivo para constantes y otras configuraciones
 
-constexpr int CARTAS_INICIALES = 3;
+constexpr int CARTAS_INICIALES = 38;
 
 /* TABLERO */
 constexpr int MAX_FILAS = 8;
