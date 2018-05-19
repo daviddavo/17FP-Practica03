@@ -22,7 +22,6 @@ typedef struct {
 typedef tPuntuacion *tPuntuacionPtr;
 
 typedef struct {
-    tPuntuacion *puntuaciones;
     tPuntuacionPtr *puntuacionesNum;
     tPuntuacionPtr *puntuacionesAlfa;  // Alias of tPuntuacion **
     unsigned cnt;

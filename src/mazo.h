@@ -1,6 +1,3 @@
-#ifndef SRC_MAZO_H_
-#define SRC_MAZO_H_
-
 #ifdef _DEBUG 
 #define _CRTDBG_MAP_ALLOC 
 #include <stdlib.h> 
@@ -10,6 +7,9 @@
 #define new DBG_NEW 
 #endif 
 #endif
+
+#ifndef SRC_MAZO_H_
+#define SRC_MAZO_H_
 
 #include <algorithm>
 #include <string>

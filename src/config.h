@@ -23,8 +23,8 @@ const unsigned SCROLL_PUNTUACIONES = 8;  // Puntuaciones a mostrar en la pantall
 
 const unsigned LOG_SIZE = 10;  // Numero de mensajes que almacenar
 
-const unsigned MOVE_DELAY = 0;   // Tiempo en ms que dura cada "fotograma" de los movimientos
-const unsigned LASER_DELAY = 0;  // Tiempo que tardara cada fotograma del laser
+const unsigned MOVE_DELAY = 200;   // Tiempo en ms que dura cada "fotograma" de los movimientos
+const unsigned LASER_DELAY = 100;  // Tiempo que tardara cada fotograma del laser
 // de la animacion de movimiento
 
 // Usando http://en.cppreference.com/w/cpp/language/string_literal

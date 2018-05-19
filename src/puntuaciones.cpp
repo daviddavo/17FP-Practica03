@@ -56,7 +56,7 @@ bool guardarPuntuaciones(const tPuntuaciones &puntuaciones) {
     std::ofstream file(FILE_PUNTUACIONES);
 
     for (unsigned i = 0; i < puntuaciones.cnt && !file.fail(); i++)
-        file << puntuaciones.puntuaciones[i].nombre << " " << puntuaciones.puntuaciones[i].puntos << std::endl;
+        file << puntuaciones.puntuacionesNum[i]->nombre << " " << puntuaciones.puntuacionesNum[i]->puntos << std::endl;
 
     file.close();
     return !file.fail();
@@ -65,7 +65,6 @@ bool guardarPuntuaciones(const tPuntuaciones &puntuaciones) {
 bool cargarPuntuaciones(tPuntuaciones &puntuaciones) {
     std::ifstream file(FILE_PUNTUACIONES);
     puntuaciones.cnt = 0;
-    puntuaciones.puntuaciones = new tPuntuacion[INIT_PUNTUACIONES];
     puntuaciones.puntuacionesAlfa = new tPuntuacionPtr[INIT_PUNTUACIONES];
     puntuaciones.puntuacionesNum = new tPuntuacionPtr[INIT_PUNTUACIONES];
     puntuaciones.MAX = INIT_PUNTUACIONES;
@@ -73,14 +72,14 @@ bool cargarPuntuaciones(tPuntuaciones &puntuaciones) {
     tPuntuacion puntuacion;
     while (file >> puntuacion.nombre >> puntuacion.puntos) {
         if (puntuaciones.cnt == puntuaciones.MAX) redimensionar(puntuaciones);
-        // puntuaciones.puntuacionesAlfa[puntuaciones.cnt] = puntuaciones.puntuaciones + puntuaciones.cnt;
-        puntuaciones.puntuacionesAlfa[puntuaciones.cnt] = &puntuaciones.puntuaciones[puntuaciones.cnt];
-        puntuaciones.puntuacionesNum[puntuaciones.cnt] = &puntuaciones.puntuaciones[puntuaciones.cnt];
-        puntuaciones.puntuaciones[puntuaciones.cnt++] = puntuacion;
+        puntuaciones.puntuacionesNum[puntuaciones.cnt] = new tPuntuacion(puntuacion);
+        puntuaciones.puntuacionesAlfa[puntuaciones.cnt] = puntuaciones.puntuacionesNum[puntuaciones.cnt];
+        puntuaciones.cnt++;
+        // puntuaciones.puntuaciones[puntuaciones.cnt++] = puntuacion;
     }
 
     quickSortPuntuaciones(puntuaciones.puntuacionesAlfa, 0, puntuaciones.cnt - 1, criterioAlpha);
-    // quickSortPuntuaciones(puntuaciones.puntuacionesNum, 0, puntuaciones.cnt - 1, criterioNum);
+    quickSortPuntuaciones(puntuaciones.puntuacionesNum, 0, puntuaciones.cnt - 1, criterioNum);
 
     file.close();
     return !file.fail();
@@ -90,14 +89,14 @@ int busquedaBin(const tPuntuacionPtr puntuaciones[], int bot, int top, std::stri
     int i = -1;
     while (i == -1 && top >= bot) {
         int midi = bot + (top - bot) / 2;
-		if (puntuaciones[midi]->nombre == nombre)
-			i = midi;
-		else if (puntuaciones[midi]->nombre < nombre)
-			// i = busquedaBin(puntuaciones, midi + 1, top, nombre);
-			bot = midi + 1;
-		else
-			// i = busquedaBin(puntuaciones, bot, midi - 1, nombre);
-			top = midi - 1;
+        if (puntuaciones[midi]->nombre == nombre)
+            i = midi;
+        else if (puntuaciones[midi]->nombre < nombre)
+            // i = busquedaBin(puntuaciones, midi + 1, top, nombre);
+            bot = midi + 1;
+        else
+            // i = busquedaBin(puntuaciones, bot, midi - 1, nombre);
+            top = midi - 1;
     }
 
     return i;
@@ -113,10 +112,10 @@ bool actualizarPuntuacion(tPuntuaciones &puntuaciones, const std::string nombre,
         // No lo encontramos, lo añadimos
         if (puntuaciones.cnt == puntuaciones.MAX) redimensionar(puntuaciones);
 
-        puntuaciones.puntuaciones[puntuaciones.cnt].nombre = nombre;
-        puntuaciones.puntuaciones[puntuaciones.cnt].puntos = add;
-        puntuaciones.puntuacionesAlfa[puntuaciones.cnt] = &puntuaciones.puntuaciones[puntuaciones.cnt];
-        puntuaciones.puntuacionesNum[puntuaciones.cnt] = &puntuaciones.puntuaciones[puntuaciones.cnt];
+        puntuaciones.puntuacionesNum[puntuaciones.cnt] = new tPuntuacion;
+        puntuaciones.puntuacionesNum[puntuaciones.cnt]->nombre = nombre;
+        puntuaciones.puntuacionesNum[puntuaciones.cnt]->puntos = add;
+        puntuaciones.puntuacionesAlfa[puntuaciones.cnt] = puntuaciones.puntuacionesNum[puntuaciones.cnt];
         puntuaciones.cnt++;
 
         quickSortPuntuaciones(puntuaciones.puntuacionesAlfa, 0, puntuaciones.cnt - 1, criterioAlpha);
@@ -129,28 +128,25 @@ bool actualizarPuntuacion(tPuntuaciones &puntuaciones, const std::string nombre,
 void redimensionar(tPuntuaciones &puntuaciones, const unsigned aumentar) {
     int max = puntuaciones.MAX + aumentar;
 
-    tPuntuacion *aux = NULL;
     tPuntuacionPtr *auxPtrsAlfa = NULL;
     tPuntuacionPtr *auxPtrsNum = NULL;
-    aux = new tPuntuacion[puntuaciones.MAX + aumentar];
     auxPtrsAlfa = new tPuntuacionPtr[puntuaciones.MAX + aumentar];
     auxPtrsNum = new tPuntuacionPtr[puntuaciones.MAX + aumentar];
 
     for (unsigned i = 0; i < puntuaciones.cnt; i++) {
-        aux[i] = puntuaciones.puntuaciones[i];
-        auxPtrsAlfa[i] = puntuaciones.puntuacionesAlfa[i] - puntuaciones.puntuaciones + aux;
-        auxPtrsNum[i] = puntuaciones.puntuacionesNum[i] - puntuaciones.puntuaciones + aux;
+        auxPtrsAlfa[i] = puntuaciones.puntuacionesAlfa[i];
+        auxPtrsNum[i] = puntuaciones.puntuacionesNum[i];
     }
-    liberar(puntuaciones);
-    puntuaciones.puntuaciones = aux;
+    delete[] puntuaciones.puntuacionesNum;
+    delete[] puntuaciones.puntuacionesAlfa;
     puntuaciones.puntuacionesAlfa = auxPtrsAlfa;
     puntuaciones.puntuacionesNum = auxPtrsNum;
     puntuaciones.MAX = max;
 }
 
 void liberar(tPuntuaciones &puntuaciones) {
+    for (unsigned i = 0; i < puntuaciones.cnt; i++) delete puntuaciones.puntuacionesNum[i];
     delete[] puntuaciones.puntuacionesNum;
     delete[] puntuaciones.puntuacionesAlfa;
-    delete[] puntuaciones.puntuaciones;
     puntuaciones.MAX = 0;  // Básicamente para hacer el debug más sencillo
 }
